@@ -55,8 +55,8 @@ const Sidebar: React.FC = () => {
   ];
 
   return (
-    <aside className="w-64 bg-slate-800 border-r border-slate-700 flex flex-col">
-      <div className="p-6">
+    <aside className="w-56 md:w-64 bg-slate-800 border-r border-slate-700 flex flex-col">
+      <div className="p-4 md:p-6">
         <h1 className="text-2xl font-bold text-white flex items-center">
           <Calendar className="mr-2 text-cyan-400" />
           Chrono
@@ -66,7 +66,7 @@ const Sidebar: React.FC = () => {
         </p>
       </div>
 
-      <nav className="flex-1 p-4">
+      <nav className="flex-1 p-2 md:p-4">
         <ul className="space-y-2">
           {navItems.map((item) => (
             <li key={item.view}>
@@ -86,7 +86,7 @@ const Sidebar: React.FC = () => {
         </ul>
       </nav>
 
-      <div className="p-4 border-t border-slate-700">
+      <div className="p-2 md:p-4 border-t border-slate-700">
         <button
           onClick={handleSignOut}
           disabled={isSigningOut}

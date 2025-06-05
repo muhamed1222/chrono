@@ -29,7 +29,7 @@ const AppLayout: React.FC = () => {
     <div className="flex h-screen bg-red-900 text-white">
       <Sidebar />
       <main className="flex-1 flex flex-col overflow-y-auto">
-        <div className="p-4">
+        <div className="p-2 md:p-4">
           <Alert />
         </div>
         <div className="flex-1 overflow-y-auto">
