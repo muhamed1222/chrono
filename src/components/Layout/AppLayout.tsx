@@ -4,9 +4,11 @@ import Sidebar from './Sidebar';
 import Calendar from '../Calendar/Calendar';
 import ClientsView from '../Clients/ClientsView';
 import PostEditor from '../Posts/PostEditor';
+import ProductEditor from '../Posts/ProductEditor';
 import TemplatesView from '../Templates/TemplatesView';
 import ProductEditor from '../Products/ProductEditor';
 import Alert from '../Alert';
+import Toast from '../ui/Toast';
 
 const AppLayout: React.FC = () => {
   const { currentView } = useAppContext();
@@ -34,6 +36,7 @@ const AppLayout: React.FC = () => {
       <main className="flex-1 flex flex-col overflow-y-auto">
         <div className="p-2 md:p-4">
           <Alert />
+          <Toast />
         </div>
         <div className="flex-1 overflow-y-auto">
           {renderCurrentView()}
