@@ -1,9 +1,22 @@
-import React from 'react';
-import { Calendar, Users, FileText, Lightbulb, LogOut } from 'lucide-react';
+import React, { useState } from 'react';
+import { Calendar, Users, FileText, Lightbulb, LogOut, Loader } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
 
 const Sidebar: React.FC = () => {
-  const { currentView, setCurrentView, signOut } = useAppContext();
+  const { currentView, setCurrentView, signOut, error, clearError } = useAppContext();
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    clearError();
+    try {
+      await signOut();
+    } catch {
+      // error is handled in context
+    } finally {
+      setIsSigningOut(false);
+    }
+  };
 
   const navItems = [
     {
@@ -62,12 +75,22 @@ const Sidebar: React.FC = () => {
 
       <div className="p-4 border-t border-slate-700">
         <button
-          onClick={() => signOut()}
-          className="w-full flex items-center rounded-lg px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all"
+          onClick={handleSignOut}
+          disabled={isSigningOut}
+          className="w-full flex items-center rounded-lg px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <LogOut size={20} className="mr-3" />
+          {isSigningOut ? (
+            <Loader size={20} className="mr-3 animate-spin" />
+          ) : (
+            <LogOut size={20} className="mr-3" />
+          )}
           Выйти
         </button>
+        {error && (
+          <div className="mt-4 px-4 py-2 bg-red-500/10 border border-red-500 text-red-400 rounded">
+            {error}
+          </div>
+        )}
       </div>
     </aside>
   );
