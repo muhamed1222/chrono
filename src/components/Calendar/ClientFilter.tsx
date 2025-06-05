@@ -67,7 +67,7 @@ const ClientFilter: React.FC<ClientFilterProps> = ({ clients, selectedClients, o
                   value={client.id}
                   checked={selectedClients.includes(client.id)}
                   onChange={() => toggleClient(client.id)}
-                </div>
+                />
                 <span className="flex-1 text-sm">{client.name}</span>
                 <div className="w-5 h-5 rounded border border-slate-600 flex items-center justify-center">
                   {selectedClients.includes(client.id) && (
