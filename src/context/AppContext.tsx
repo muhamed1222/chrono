@@ -4,6 +4,7 @@ import { supabase, handleSupabaseError } from '../lib/supabase';
 import { formatLocalISO } from '../utils/time';
 import sanitizeHtml from 'sanitize-html';
 import { User } from '@supabase/supabase-js';
+import type { Provider } from '@supabase/auth-js';
 
 interface AppContextType {
   clients: Client[];
@@ -29,6 +30,7 @@ interface AppContextType {
   deletePost: (postId: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
+  signInWithOAuth: (provider: 'telegram' | 'vk' | 'google') => Promise<void>;
   signOut: () => Promise<void>;
   clearError: () => void;
 }
@@ -272,6 +274,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
+  const signInWithOAuth = async (
+    provider: 'telegram' | 'vk' | 'google'
+  ) => {
+    try {
+      setError(null);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: provider as unknown as Provider,
+      });
+      if (error) throw error;
+    } catch (err) {
+      const errorMessage = handleSupabaseError(err);
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  };
+
   const signOut = async () => {
     try {
       setError(null);
@@ -312,6 +330,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         deletePost,
         signIn,
         signUp,
+        signInWithOAuth,
         signOut,
         clearError,
       }}
