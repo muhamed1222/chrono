@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { getSupabase } from './supabase';
 
 const bucket = import.meta.env.VITE_SUPABASE_STORAGE_BUCKET || 'media';
 
@@ -6,10 +6,11 @@ const bucket = import.meta.env.VITE_SUPABASE_STORAGE_BUCKET || 'media';
  * Upload a file to Supabase Storage and return the public URL.
  */
 export const uploadFile = async (file: File): Promise<string> => {
+  const supabase = getSupabase();
   const ext = file.name.split('.').pop() || 'bin';
   const fileName = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
 
-  const { error } = await supabase!.storage
+  const { error } = await supabase.storage
     .from(bucket)
     .upload(fileName, file, { contentType: file.type });
 
@@ -17,6 +18,6 @@ export const uploadFile = async (file: File): Promise<string> => {
     throw error;
   }
 
-  const { data } = supabase!.storage.from(bucket).getPublicUrl(fileName);
+  const { data } = supabase.storage.from(bucket).getPublicUrl(fileName);
   return data.publicUrl;
 };
