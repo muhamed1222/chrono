@@ -4,6 +4,8 @@ import { useAppContext } from '../../context/AppContext';
 import { formatLocalISO } from '../../utils/time';
 import imageCompression from 'browser-image-compression';
 import { uploadFile } from '../../lib/storage';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
 
 const PostEditor: React.FC = () => {
   const {
@@ -227,35 +229,24 @@ const PostEditor: React.FC = () => {
             <div className="space-y-2">
               <label className="block text-sm font-medium text-slate-300">Медиа</label>
               <div className="flex space-x-2">
-                <input
+                <Input
                   type="url"
                   value={mediaUrlInput}
                   onChange={(e) => setMediaUrlInput(e.target.value)}
                   placeholder="https://example.com/image.jpg"
-                  className="flex-1 p-3 bg-slate-800 rounded-lg border border-slate-700 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  className="flex-1"
                 />
-                <button
-                  onClick={handleAddMedia}
-                  className="px-3 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition-colors flex items-center"
-                >
+                <Button type="button" onClick={handleAddMedia} className="flex items-center px-3 py-2 bg-slate-700 hover:bg-slate-600">
                   <Image size={14} className="mr-1" />
                   Добавить
-                </button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="px-3 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition-colors flex items-center"
-                >
-                  <Image size={14} className="mr-1" />
-                  Загрузить
-                </button>
+                </Button>
               </div>
+              <Input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+              />
               {mediaInputError && (
                 <p className="text-sm text-red-500">{mediaInputError}</p>
               )}

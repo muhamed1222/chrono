@@ -45,6 +45,8 @@ const AuthLayout: React.FC = () => {
   };
 
   return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-full max-w-md space-y-8 p-4">
         <div>
           <h2 className="text-center text-3xl font-bold text-white">
             {isRegister ? 'Регистрация в Chrono' : 'Войти в Chrono'}
@@ -54,7 +56,7 @@ const AuthLayout: React.FC = () => {
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="space-y-6" onSubmit={handleSubmit}>
           {error && (
             <div className="bg-red-500/10 border border-red-500 text-red-400 px-4 py-3 rounded">
               {error}
