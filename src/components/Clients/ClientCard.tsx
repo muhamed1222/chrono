@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Edit, Trash, Link2 } from 'lucide-react';
 import { Client } from '../../types';
 import { useAppContext } from '../../context/AppContext';
+import EditClientNameModal from './EditClientNameModal';
+import ConfirmModal from './ConfirmModal';
 
 interface ClientCardProps {
   client: Client;
@@ -16,38 +18,37 @@ const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
     role
   } = useAppContext();
 
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
   const handleCreatePost = () => {
     setSelectedClient(client.id);
     setCurrentView('post-editor');
   };
 
-  const handleEdit = async () => {
-    const newName = window.prompt('Новое название клиента', client.name);
-    if (newName && newName !== client.name) {
-      await updateClient(client.id, { name: newName });
-    }
+  const handleEdit = () => {
+    setShowEditModal(true);
   };
 
-  const handleDelete = async () => {
-    if (window.confirm(`Удалить клиента "${client.name}"?`)) {
-      await deleteClient(client.id);
-    }
+  const handleDelete = () => {
+    setShowDeleteModal(true);
   };
 
   return (
-    <div className="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 hover:border-slate-600 transition-colors">
-      <div 
-        className="h-24 bg-gradient-to-r p-3 md:p-4 flex items-end"
-        style={{ 
-          backgroundImage: client.logo 
-            ? `linear-gradient(to right, ${client.color}80, ${client.color}), url(${client.logo})` 
-            : `linear-gradient(to right, ${client.color}50, ${client.color})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
-        <h3 className="text-xl font-bold text-white">{client.name}</h3>
-      </div>
+    <>
+      <div className="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 hover:border-slate-600 transition-colors">
+        <div
+          className="h-24 bg-gradient-to-r p-3 md:p-4 flex items-end"
+          style={{
+            backgroundImage: client.logo
+              ? `linear-gradient(to right, ${client.color}80, ${client.color}), url(${client.logo})`
+              : `linear-gradient(to right, ${client.color}50, ${client.color})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        >
+          <h3 className="text-xl font-bold text-white">{client.name}</h3>
+        </div>
       
       <div className="p-3 md:p-4">
         <div className="flex items-center text-sm text-slate-400 mb-3">
@@ -105,6 +106,29 @@ const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
         )}
       </div>
     </div>
+    {showEditModal && (
+      <EditClientNameModal
+        initialName={client.name}
+        onClose={() => setShowEditModal(false)}
+        onSave={async name => {
+          if (name && name !== client.name) {
+            await updateClient(client.id, { name });
+          }
+        }}
+      />
+    )}
+    {showDeleteModal && (
+      <ConfirmModal
+        message={`Удалить клиента "${client.name}"?`}
+        confirmText="Удалить"
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={async () => {
+          await deleteClient(client.id);
+          setShowDeleteModal(false);
+        }}
+      />
+    )}
+    </>
   );
 };
 
