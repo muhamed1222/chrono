@@ -40,14 +40,12 @@
 
 - `VITE_SUPABASE_URL` — адрес проекта Supabase
 - `VITE_SUPABASE_ANON_KEY` — публичный ключ (Anon Key)
-- `VITE_INACTIVITY_TIMEOUT_MINUTES` — время бездействия в минутах до автоматического выхода
 
 ## Пример `.env.example`
 
 ```bash
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
-VITE_INACTIVITY_TIMEOUT_MINUTES=30
 ```
 
 ## Database setup
