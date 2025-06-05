@@ -155,6 +155,17 @@ app.delete('/api/templates/:id', async (req, res) => {
   res.json({ success: true });
 });
 
+// Products endpoint (demo only)
+app.post('/api/products', async (req, res) => {
+  // Simply echo the received payload
+  try {
+    res.json({ success: true, product: req.body });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    res.status(500).json({ error: message });
+  }
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`API server running on port ${PORT}`);
