@@ -1,7 +1,7 @@
 import React from 'react';
 import { renderHook, act } from '@testing-library/react';
 import { AppProvider, useAppContext } from '../AppContext';
-import { supabase } from '../../lib/supabase';
+import { getSupabase } from '../../lib/supabase';
 
 jest.mock('../../lib/supabase', () => {
   const signInWithPassword = jest.fn();
@@ -9,14 +9,17 @@ jest.mock('../../lib/supabase', () => {
   const signUp = jest.fn();
   const onAuthStateChange = jest.fn(() => ({ data: { subscription: { unsubscribe: jest.fn() } } }));
   const getSession = jest.fn().mockResolvedValue({ data: { session: null } });
+  const supabase = {
+    auth: { signInWithPassword, signOut, signUp, onAuthStateChange, getSession },
+    from: jest.fn(() => ({ select: jest.fn().mockReturnThis(), order: jest.fn().mockReturnThis() }))
+  };
   return {
-    supabase: {
-      auth: { signInWithPassword, signOut, signUp, onAuthStateChange, getSession },
-      from: jest.fn(() => ({ select: jest.fn().mockReturnThis(), order: jest.fn().mockReturnThis() }))
-    },
+    getSupabase: jest.fn(() => supabase),
     handleSupabaseError: jest.fn().mockImplementation((e: unknown) => e instanceof Error ? e.message : 'unknown')
   };
 });
+
+const supabase = getSupabase();
 
 const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <AppProvider>{children}</AppProvider>

@@ -5,19 +5,29 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 let supabase: SupabaseClient | null = null;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase environment variables');
-} else {
-  supabase = createClient(supabaseUrl, supabaseAnonKey, {
+const createSupabase = () =>
+  createClient(supabaseUrl!, supabaseAnonKey!, {
     auth: {
       persistSession: true,
       autoRefreshToken: true,
-      detectSessionInUrl: true
-    }
+      detectSessionInUrl: true,
+    },
   });
+
+if (supabaseUrl && supabaseAnonKey) {
+  supabase = createSupabase();
+} else {
+  console.error('Missing Supabase environment variables');
 }
 
-export { supabase };
+export const getSupabase = (): SupabaseClient => {
+  if (supabase) return supabase;
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Supabase credentials not configured');
+  }
+  supabase = createSupabase();
+  return supabase;
+};
 
 // Helper to handle Supabase errors
 export const handleSupabaseError = (error: unknown) => {
