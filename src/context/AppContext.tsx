@@ -62,8 +62,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [lastActivity, setLastActivity] = useState<number>(Date.now());
   const [notification, setNotification] = useState<string | null>(null);
 
-  const inactivityMinutes = Number(
-  );
+  const getEnv = () => {
+    try {
+      return (0, eval)('import.meta.env');
+    } catch {
+      return undefined;
+    }
+  };
+
+  const inactivityMinutes =
+    Number(getEnv()?.VITE_INACTIVITY_TIMEOUT_MINUTES ?? 0) || 0;
   const inactivityMs = inactivityMinutes > 0 ? inactivityMinutes * 60_000 : null;
 
   useEffect(() => {
