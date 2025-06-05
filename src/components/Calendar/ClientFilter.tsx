@@ -67,19 +67,6 @@ const ClientFilter: React.FC<ClientFilterProps> = ({ clients, selectedClients, o
                   value={client.id}
                   checked={selectedClients.includes(client.id)}
                   onChange={() => toggleClient(client.id)}
-                  className="hidden"
-                />
-                <div
-                  className="flex-shrink-0 w-6 h-6 rounded-full overflow-hidden mr-3"
-                  style={{ backgroundColor: client.color }}
-                >
-                  {client.logo && (
-                    <img
-                      src={client.logo}
-                      alt={client.name}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
                 </div>
                 <span className="flex-1 text-sm">{client.name}</span>
                 <div className="w-5 h-5 rounded border border-slate-600 flex items-center justify-center">
