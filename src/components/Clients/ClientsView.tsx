@@ -10,7 +10,7 @@ const ClientsView: React.FC = () => {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="p-6 border-b border-slate-700 flex justify-between items-center">
+      <div className="p-4 md:p-6 border-b border-slate-700 flex justify-between items-center">
         <h2 className="text-2xl font-bold">Клиенты</h2>
         {role !== 'viewer' && (
           <button
@@ -23,10 +23,10 @@ const ClientsView: React.FC = () => {
         )}
       </div>
 
-      <div className="flex-1 p-6 overflow-y-auto">
+      <div className="flex-1 p-4 md:p-6 overflow-y-auto">
         {clients.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full">
-            <div className="p-6 bg-slate-800 rounded-full mb-4">
+            <div className="p-4 md:p-6 bg-slate-800 rounded-full mb-4">
               <Users size={32} className="text-slate-400" />
             </div>
             <h3 className="text-xl font-medium mb-2">Нет клиентов</h3>

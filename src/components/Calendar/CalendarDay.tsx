@@ -34,7 +34,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({ date, posts, clients, onAddPo
         isToday ? 'ring-2 ring-cyan-500/50' : ''
       }`}
     >
-      <div className={`p-4 ${isToday ? 'bg-cyan-900/50' : 'bg-slate-700'}`}>
+      <div className={`p-3 md:p-4 ${isToday ? 'bg-cyan-900/50' : 'bg-slate-700'}`}>
         <div className="flex justify-between items-center">
           <p className={className || 'text-2xl font-bold text-white'}>{day}</p>
           <div className="flex items-center space-x-2">
@@ -56,7 +56,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({ date, posts, clients, onAddPo
         </div>
       </div>
 
-      <div className="flex-1 p-3 space-y-2 overflow-y-auto max-h-[300px] scrollbar-thin">
+      <div className="flex-1 p-2 md:p-3 space-y-2 overflow-y-auto max-h-[300px] scrollbar-thin">
         {posts.length === 0 ? (
           <div className="flex items-center justify-center h-full">
             <p className="text-sm text-slate-500">Нет публикаций</p>
@@ -68,7 +68,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({ date, posts, clients, onAddPo
               <div
                 key={post.id}
                 onClick={() => handlePostClick(post.id)}
-                className="group relative p-3 rounded-lg bg-slate-700 hover:bg-slate-600 cursor-pointer transition-all"
+                className="group relative p-2 md:p-3 rounded-lg bg-slate-700 hover:bg-slate-600 cursor-pointer transition-all"
                 style={{ borderLeft: `4px solid ${client?.color || '#94a3b8'}` }}
               >
                 <div className="flex items-center justify-between mb-2">

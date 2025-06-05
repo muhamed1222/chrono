@@ -37,7 +37,7 @@ const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
   return (
     <div className="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 hover:border-slate-600 transition-colors">
       <div 
-        className="h-24 bg-gradient-to-r p-4 flex items-end"
+        className="h-24 bg-gradient-to-r p-3 md:p-4 flex items-end"
         style={{ 
           backgroundImage: client.logo 
             ? `linear-gradient(to right, ${client.color}80, ${client.color}), url(${client.logo})` 
@@ -49,7 +49,7 @@ const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
         <h3 className="text-xl font-bold text-white">{client.name}</h3>
       </div>
       
-      <div className="p-4">
+      <div className="p-3 md:p-4">
         <div className="flex items-center text-sm text-slate-400 mb-3">
           <span>Ниша:</span>
           <span className="ml-2 px-2 py-0.5 rounded bg-slate-700 text-white">

@@ -41,7 +41,7 @@ const ClientFilter: React.FC<ClientFilterProps> = ({ clients, selectedClients, o
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-slate-800 rounded-lg shadow-lg z-10 p-2 border border-slate-700">
+        <div className="absolute right-0 mt-2 w-60 sm:w-64 bg-slate-800 rounded-lg shadow-lg z-10 p-2 border border-slate-700">
           <div className="flex justify-between text-xs text-slate-400 p-2 border-b border-slate-700">
             <button
               onClick={selectAll}

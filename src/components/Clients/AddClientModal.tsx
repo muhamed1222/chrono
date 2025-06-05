@@ -39,7 +39,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ onClose }) => {
   
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-slate-800 rounded-lg w-full max-w-md p-6 relative">
+      <div className="bg-slate-800 rounded-lg w-full max-w-md p-4 md:p-6 relative">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-slate-400 hover:text-white"
