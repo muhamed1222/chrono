@@ -49,6 +49,11 @@ const Sidebar: React.FC = () => {
       view: 'post-editor' as const,
     },
     {
+      icon: <FileText size={20} />,
+      label: 'Товар',
+      view: 'product-editor' as const,
+    },
+    {
       icon: <Lightbulb size={20} />,
       label: 'Идеи',
       view: 'templates' as const,
