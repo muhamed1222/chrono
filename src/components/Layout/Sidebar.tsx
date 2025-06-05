@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, Users, FileText, Lightbulb, LogOut, Loader } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
+import Button from '../ui/Button';
 
 const Sidebar: React.FC = () => {
   const { currentView, setCurrentView, signOut, signOutAll, error, clearError } = useAppContext();
@@ -70,9 +71,9 @@ const Sidebar: React.FC = () => {
         <ul className="space-y-2">
           {navItems.map((item) => (
             <li key={item.view}>
-              <button
+              <Button
                 onClick={() => setCurrentView(item.view)}
-                className={`w-full flex items-center rounded-lg px-4 py-3 text-sm font-medium transition-all ${
+                className={`w-full flex items-center rounded-lg px-4 py-3 ${
                   currentView === item.view
                     ? 'bg-slate-700 text-cyan-400'
                     : 'text-slate-300 hover:bg-slate-700/50 hover:text-white'
@@ -80,17 +81,17 @@ const Sidebar: React.FC = () => {
               >
                 <span className="mr-3">{item.icon}</span>
                 {item.label}
-              </button>
+              </Button>
             </li>
           ))}
         </ul>
       </nav>
 
       <div className="p-4 border-t border-slate-700">
-        <button
+        <Button
           onClick={handleSignOut}
           disabled={isSigningOut}
-          className="w-full flex items-center rounded-lg px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full flex items-center rounded-lg px-4 py-3 text-sm text-slate-300 hover:bg-slate-700/50 hover:text-white"
         >
           {isSigningOut ? (
             <Loader size={20} className="mr-3 animate-spin" />
@@ -98,11 +99,11 @@ const Sidebar: React.FC = () => {
             <LogOut size={20} className="mr-3" />
           )}
           Выйти
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={handleSignOutAll}
           disabled={isSigningOutAll}
-          className="w-full flex items-center rounded-lg px-4 py-3 mt-2 text-sm font-medium text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full flex items-center rounded-lg px-4 py-3 mt-2 text-sm text-slate-300 hover:bg-slate-700/50 hover:text-white"
         >
           {isSigningOutAll ? (
             <Loader size={20} className="mr-3 animate-spin" />
@@ -110,7 +111,7 @@ const Sidebar: React.FC = () => {
             <LogOut size={20} className="mr-3" />
           )}
           Выйти везде
-        </button>
+        </Button>
         {error && (
           <div className="mt-4 px-4 py-2 bg-red-500/10 border border-red-500 text-red-400 rounded">
             {error}

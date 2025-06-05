@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 Cypress.Commands.add('login', (email: string, password: string) => {
   cy.visit('http://localhost:5173');
   cy.get('input[name="email"]').type(email);
