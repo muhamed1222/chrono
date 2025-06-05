@@ -3,11 +3,19 @@
 @tailwind utilities;
 
 :root {
+  color-scheme: light;
+  --color-bg: #f8fafc;
+  --color-text: #0f172a;
+}
+
+.dark {
   color-scheme: dark;
+  --color-bg: #1e293b;
+  --color-text: #f8fafc;
 }
 
 body {
-  @apply bg-red-900 text-white;
+  @apply bg-background text-text;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
