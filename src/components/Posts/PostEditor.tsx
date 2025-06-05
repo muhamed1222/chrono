@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, Image, Send, X } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
+import { formatLocalISO } from '../../utils/time';
 
 const PostEditor: React.FC = () => {
   const { 
@@ -31,7 +32,7 @@ const PostEditor: React.FC = () => {
         setPlatforms(post.platforms);
         
         const date = new Date(post.scheduledFor);
-        setScheduledDate(date.toISOString().split('T')[0]);
+        setScheduledDate(formatLocalISO(date).split('T')[0]);
         setScheduledTime(date.toTimeString().slice(0, 5));
       }
     } else if (selectedClient) {
@@ -48,14 +49,14 @@ const PostEditor: React.FC = () => {
     }
     
     if (selectedDate) {
-      setScheduledDate(new Date(selectedDate).toISOString().split('T')[0]);
+      setScheduledDate(formatLocalISO(new Date(selectedDate)).split('T')[0]);
     } else {
-      setScheduledDate(new Date().toISOString().split('T')[0]);
+      setScheduledDate(formatLocalISO(new Date()).split('T')[0]);
     }
   }, [selectedPost, selectedClient, selectedDate, posts, clients]);
   
   const handleSavePost = () => {
-    const scheduledDateTime = new Date(`${scheduledDate}T${scheduledTime}`).toISOString();
+    const scheduledDateTime = formatLocalISO(new Date(`${scheduledDate}T${scheduledTime}`));
     
     if (selectedPost) {
       updatePost(selectedPost, {

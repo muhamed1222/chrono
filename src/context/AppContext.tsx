@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Client, Post, PostTemplate } from '../types';
 import { supabase, handleSupabaseError } from '../lib/supabase';
+import { formatLocalISO } from '../utils/time';
 import sanitizeHtml from 'sanitize-html';
 import { User } from '@supabase/supabase-js';
 
@@ -131,7 +132,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     try {
       setError(null);
       const sanitizedContent = sanitizeHtml(post.content);
-      const now = new Date().toISOString();
+      const now = formatLocalISO(new Date());
       
       const { data, error } = await supabase
         .from('posts')
@@ -159,7 +160,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (updates.content) {
         updates.content = sanitizeHtml(updates.content);
       }
-      updates.updatedAt = new Date().toISOString();
+      updates.updatedAt = formatLocalISO(new Date());
 
       const { data, error } = await supabase
         .from('posts')
