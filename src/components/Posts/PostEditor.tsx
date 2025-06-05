@@ -6,15 +6,16 @@ import imageCompression from 'browser-image-compression';
 import { uploadFile } from '../../lib/storage';
 
 const PostEditor: React.FC = () => {
-  const { 
-    clients, 
-    posts, 
-    selectedPost, 
-    selectedClient, 
-    selectedDate, 
+  const {
+    clients,
+    posts,
+    selectedPost,
+    selectedClient,
+    selectedDate,
     setCurrentView,
     addPost,
-    updatePost
+    updatePost,
+    role
   } = useAppContext();
   
   const [content, setContent] = useState('');
@@ -177,14 +178,16 @@ const PostEditor: React.FC = () => {
           >
             Отмена
           </button>
-          <button
-            onClick={handleSavePost}
-            disabled={!content || !clientId || platforms.length === 0 || loading}
-            className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
-          >
-            <Send size={16} className="mr-2" />
-            {loading ? 'Сохранение...' : 'Запланировать'}
-          </button>
+          {role !== 'viewer' && (
+            <button
+              onClick={handleSavePost}
+              disabled={!content || !clientId || platforms.length === 0 || loading}
+              className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+            >
+              <Send size={16} className="mr-2" />
+              {loading ? 'Сохранение...' : 'Запланировать'}
+            </button>
+          )}
         </div>
       </div>
       

@@ -29,6 +29,10 @@
    ```bash
    npm run build
    ```
+5. Проверьте код линтером:
+   ```bash
+   npm run lint
+   ```
 
 ## Переменные окружения
 
@@ -36,14 +40,12 @@
 
 - `VITE_SUPABASE_URL` — адрес проекта Supabase
 - `VITE_SUPABASE_ANON_KEY` — публичный ключ (Anon Key)
-- `VITE_SUPABASE_STORAGE_BUCKET` — название бакета Storage для загрузки файлов
 
 ## Пример `.env.example`
 
 ```bash
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
-VITE_SUPABASE_STORAGE_BUCKET=media
 ```
 
 ## Database setup
@@ -63,3 +65,19 @@ supabase migration up
 
 Перед выполнением убедитесь, что проект связан с вашим экземпляром Supabase.
 Если связь не настроена, выполните `supabase link` и следуйте инструкциям CLI.
+
+## Testing
+
+Для запуска unit-тестов выполните:
+
+```bash
+npm test
+```
+
+E2E тесты запускаются командой:
+
+```bash
+npm run test:e2e
+```
+
+Для корректной работы Cypress необходимо предварительно установить его бинарники командой `npx cypress install`.

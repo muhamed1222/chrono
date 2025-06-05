@@ -7,7 +7,7 @@ interface AddClientModalProps {
 }
 
 const AddClientModal: React.FC<AddClientModalProps> = ({ onClose }) => {
-  const { addClient } = useAppContext();
+  const { addClient, role } = useAppContext();
   const [name, setName] = useState('');
   const [industry, setIndustry] = useState('');
   const [logo, setLogo] = useState('');
@@ -126,13 +126,15 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ onClose }) => {
             >
               Отмена
             </button>
-            <button
-              type="submit"
-              disabled={!name || !industry || loading}
-              className="flex-1 px-4 py-2 bg-cyan-600 rounded-lg hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {loading ? 'Добавление...' : 'Добавить'}
-            </button>
+            {role !== 'viewer' && (
+              <button
+                type="submit"
+                disabled={!name || !industry || loading}
+                className="flex-1 px-4 py-2 bg-cyan-600 rounded-lg hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {loading ? 'Добавление...' : 'Добавить'}
+              </button>
+            )}
           </div>
         </form>
       </div>

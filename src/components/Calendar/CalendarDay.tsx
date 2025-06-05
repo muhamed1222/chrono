@@ -14,7 +14,7 @@ interface CalendarDayProps {
 }
 
 const CalendarDay: React.FC<CalendarDayProps> = ({ date, posts, clients, onAddPost, className }) => {
-  const { setSelectedPost, setCurrentView } = useAppContext();
+  const { setSelectedPost, setCurrentView, role } = useAppContext();
   
   const day = format(date, 'd', { locale: ru });
   const isToday = new Date().toDateString() === date.toDateString();
@@ -43,13 +43,15 @@ const CalendarDay: React.FC<CalendarDayProps> = ({ date, posts, clients, onAddPo
                 {posts.length}
               </span>
             )}
-            <button 
-              onClick={onAddPost}
-              className="p-1.5 rounded-full bg-slate-600 hover:bg-slate-500 transition-colors"
-              aria-label="Add post"
-            >
-              <Plus size={18} />
-            </button>
+            {role !== 'viewer' && (
+              <button
+                onClick={onAddPost}
+                className="p-1.5 rounded-full bg-slate-600 hover:bg-slate-500 transition-colors"
+                aria-label="Add post"
+              >
+                <Plus size={18} />
+              </button>
+            )}
           </div>
         </div>
       </div>
