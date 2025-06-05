@@ -18,6 +18,7 @@ const PostEditor: React.FC = () => {
     addPost,
     updatePost,
     showToast,
+    role,
   } = useAppContext();
   
   const [content, setContent] = useState('');
