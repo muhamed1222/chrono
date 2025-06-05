@@ -84,3 +84,19 @@ supabase migration up
 
 Эти компоненты используются для единообразного оформления элементов управления.
 
+## Testing
+
+### Unit tests (Jest)
+Запустите модульные тесты командой:
+```bash
+npm run test
+```
+
+### End-to-end tests (Cypress)
+Перед запуском убедитесь, что локальный сервер запущен на http://localhost:5173  (npm run dev).
+
+Запустите тесты с Cypress командой:
+```bash
+npm run test:e2e
+```
+
