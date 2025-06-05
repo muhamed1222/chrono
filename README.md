@@ -61,3 +61,32 @@ supabase migration up
 
 Перед выполнением убедитесь, что проект связан с вашим экземпляром Supabase.
 Если связь не настроена, выполните `supabase link` и следуйте инструкциям CLI.
+
+## API routes
+
+Приложение включает небольшой сервер Express в каталоге `api/`, который проксирует
+запросы к Supabase. Запустить его можно командой:
+
+```bash
+node api/index.ts
+```
+
+Доступные маршруты:
+
+### Clients
+- `GET /api/clients` — список клиентов
+- `POST /api/clients` — создать клиента
+- `PUT /api/clients/:id` — обновить клиента
+- `DELETE /api/clients/:id` — удалить клиента
+
+### Posts
+- `GET /api/posts` — список постов
+- `POST /api/posts` — создать пост
+- `PUT /api/posts/:id` — обновить пост
+- `DELETE /api/posts/:id` — удалить пост
+
+### Templates
+- `GET /api/templates` — список шаблонов
+- `POST /api/templates` — создать шаблон
+- `PUT /api/templates/:id` — обновить шаблон
+- `DELETE /api/templates/:id` — удалить шаблон
