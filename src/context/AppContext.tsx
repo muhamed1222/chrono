@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Client, Post, PostTemplate, UserRole } from '../types';
 import { supabase, handleSupabaseError } from '../lib/supabase';
+import { apiRequest } from '../lib/api';
 import { formatLocalISO } from '../utils/time';
 import sanitizeHtml from 'sanitize-html';
 import { User } from '@supabase/supabase-js';
@@ -105,23 +106,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       setError(null);
 
       // Load all data in parallel
-      const [
-        { data: clientsData, error: clientsError },
-        { data: postsData, error: postsError },
-        { data: templatesData, error: templatesError }
-      ] = await Promise.all([
-        supabase.from('clients').select('*').order('name'),
-        supabase.from('posts').select('*').order('scheduledFor'),
-        supabase.from('templates').select('*')
+      const [clientsData, postsData, templatesData] = await Promise.all([
+        apiRequest<Client[]>('/clients'),
+        apiRequest<Post[]>('/posts'),
+        apiRequest<PostTemplate[]>('/templates')
       ]);
 
-      if (clientsError) throw clientsError;
-      if (postsError) throw postsError;
-      if (templatesError) throw templatesError;
-
-      setClients(clientsData || []);
-      setPosts(postsData || []);
-      setTemplates(templatesData || []);
+      setClients(clientsData);
+      setPosts(postsData);
+      setTemplates(templatesData);
     } catch (err) {
       setError(handleSupabaseError(err));
     } finally {
@@ -132,13 +125,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const addClient = async (client: Omit<Client, 'id'>) => {
     try {
       setError(null);
-      const { data, error } = await supabase
-        .from('clients')
-        .insert([{ ...client, user_id: user?.id }])
-        .select()
-        .single();
-      
-      if (error) throw error;
+      const data = await apiRequest<Client>('/clients', {
+        method: 'POST',
+        body: JSON.stringify({ ...client, user_id: user?.id })
+      });
       setClients([...clients, data]);
     } catch (err) {
       const errorMessage = handleSupabaseError(err);
@@ -150,14 +140,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const updateClient = async (clientId: string, updates: Partial<Client>) => {
     try {
       setError(null);
-      const { data, error } = await supabase
-        .from('clients')
-        .update(updates)
-        .eq('id', clientId)
-        .select()
-        .single();
-
-      if (error) throw error;
+      const data = await apiRequest<Client>(`/clients/${clientId}`, {
+        method: 'PUT',
+        body: JSON.stringify(updates)
+      });
       setClients(clients.map(c => (c.id === clientId ? data : c)));
     } catch (err) {
       const errorMessage = handleSupabaseError(err);
@@ -169,12 +155,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const deleteClient = async (clientId: string) => {
     try {
       setError(null);
-      const { error } = await supabase
-        .from('clients')
-        .delete()
-        .eq('id', clientId);
-
-      if (error) throw error;
+      await apiRequest(`/clients/${clientId}`, { method: 'DELETE' });
       setClients(clients.filter(c => c.id !== clientId));
     } catch (err) {
       const errorMessage = handleSupabaseError(err);
@@ -188,19 +169,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       setError(null);
       const sanitizedContent = sanitizeHtml(post.content);
       const now = formatLocalISO(new Date());
-      
-      const { data, error } = await supabase
-        .from('posts')
-        .insert([{
+
+      const data = await apiRequest<Post>('/posts', {
+        method: 'POST',
+        body: JSON.stringify({
           ...post,
           content: sanitizedContent,
           createdAt: now,
           updatedAt: now
-        }])
-        .select()
-        .single();
-      
-      if (error) throw error;
+        })
+      });
+
       setPosts([...posts, data]);
     } catch (err) {
       const errorMessage = handleSupabaseError(err);
@@ -217,15 +196,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       }
       updates.updatedAt = formatLocalISO(new Date());
 
-      const { data, error } = await supabase
-        .from('posts')
-        .update(updates)
-        .eq('id', postId)
-        .select()
-        .single();
-      
-      if (error) throw error;
-      setPosts(posts.map(post => post.id === postId ? data : post));
+      const data = await apiRequest<Post>(`/posts/${postId}`, {
+        method: 'PUT',
+        body: JSON.stringify(updates)
+      });
+
+      setPosts(posts.map(post => (post.id === postId ? data : post)));
     } catch (err) {
       const errorMessage = handleSupabaseError(err);
       setError(errorMessage);
@@ -236,12 +212,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const deletePost = async (postId: string) => {
     try {
       setError(null);
-      const { error } = await supabase
-        .from('posts')
-        .delete()
-        .eq('id', postId);
-      
-      if (error) throw error;
+      await apiRequest(`/posts/${postId}`, { method: 'DELETE' });
       setPosts(posts.filter(post => post.id !== postId));
     } catch (err) {
       const errorMessage = handleSupabaseError(err);
