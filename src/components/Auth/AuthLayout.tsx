@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
 
 const AuthLayout: React.FC = () => {
   const { signIn, signUp, signInWithOAuth } = useAppContext();
@@ -64,7 +66,7 @@ const AuthLayout: React.FC = () => {
               <label htmlFor="email" className="sr-only">
                 Email
               </label>
-              <input
+              <Input
                 id="email"
                 name="email"
                 type="email"
@@ -72,7 +74,6 @@ const AuthLayout: React.FC = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none relative block w-full px-3 py-2 border border-slate-700 bg-slate-700/50 placeholder-slate-400 text-white rounded focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                 placeholder="Email"
               />
             </div>
@@ -80,7 +81,7 @@ const AuthLayout: React.FC = () => {
               <label htmlFor="password" className="sr-only">
                 Пароль
               </label>
-              <input
+              <Input
                 id="password"
                 name="password"
                 type="password"
@@ -88,74 +89,76 @@ const AuthLayout: React.FC = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none relative block w-full px-3 py-2 border border-slate-700 bg-slate-700/50 placeholder-slate-400 text-white rounded focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                 placeholder="Пароль"
               />
             </div>
           </div>
 
           <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <div className="w-5 h-5 border-t-2 border-white rounded-full animate-spin"></div>
-              ) : (
-                isRegister ? 'Зарегистрироваться' : 'Войти'
-              )}
-            </button>
+          <Button
+            type="submit"
+            disabled={loading}
+            className="group relative w-full flex justify-center"
+          >
+            {loading ? (
+              <div className="w-5 h-5 border-t-2 border-white rounded-full animate-spin"></div>
+            ) : (
+              isRegister ? 'Зарегистрироваться' : 'Войти'
+            )}
+          </Button>
           </div>
 
           <div className="space-y-2">
-            <button
+            <Button
               type="button"
               onClick={() => handleOAuth('google')}
               disabled={loading}
-              className="w-full flex justify-center py-2 px-4 rounded-md bg-slate-600 hover:bg-slate-500 text-white text-sm"
+              variant="secondary"
+              className="w-full flex justify-center"
             >
               Войти через Google
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={() => handleOAuth('telegram')}
               disabled={loading}
-              className="w-full flex justify-center py-2 px-4 rounded-md bg-slate-600 hover:bg-slate-500 text-white text-sm"
+              variant="secondary"
+              className="w-full flex justify-center"
             >
               Войти через Telegram
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={() => handleOAuth('vk')}
               disabled={loading}
-              className="w-full flex justify-center py-2 px-4 rounded-md bg-slate-600 hover:bg-slate-500 text-white text-sm"
+              variant="secondary"
+              className="w-full flex justify-center"
             >
               Войти через VK
-            </button>
+            </Button>
           </div>
         <div className="text-center">
           {isRegister ? (
             <p className="text-sm text-slate-400">
               Уже есть аккаунт?{' '}
-              <button
+              <Button
                 type="button"
-                className="text-cyan-500 hover:underline"
+                variant="link"
                 onClick={() => setIsRegister(false)}
               >
                 Войти
-              </button>
+              </Button>
             </p>
           ) : (
             <p className="text-sm text-slate-400">
               Нет аккаунта?{' '}
-              <button
+              <Button
                 type="button"
-                className="text-cyan-500 hover:underline"
+                variant="link"
                 onClick={() => setIsRegister(true)}
               >
                 Зарегистрироваться
-              </button>
+              </Button>
             </p>
           )}
         </div>
