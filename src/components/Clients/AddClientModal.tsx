@@ -12,19 +12,29 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ onClose }) => {
   const [industry, setIndustry] = useState('');
   const [logo, setLogo] = useState('');
   const [color, setColor] = useState('#F97316');
-  
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    addClient({
-      name,
-      industry,
-      logo: logo || undefined,
-      color,
-      socialAccounts: []
-    });
-    
-    onClose();
+
+    setError('');
+    setLoading(true);
+    try {
+      await addClient({
+        name,
+        industry,
+        logo: logo || undefined,
+        color,
+        socialAccounts: []
+      });
+      onClose();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'An error occurred';
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
   };
   
   return (
@@ -40,6 +50,11 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ onClose }) => {
         <h2 className="text-xl font-bold mb-6">Добавить клиента</h2>
         
         <form onSubmit={handleSubmit}>
+          {error && (
+            <div className="mb-4 px-4 py-2 bg-red-500/10 border border-red-500 text-red-400 rounded">
+              {error}
+            </div>
+          )}
           <div className="space-y-4">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-slate-300">
@@ -113,10 +128,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ onClose }) => {
             </button>
             <button
               type="submit"
-              disabled={!name || !industry}
+              disabled={!name || !industry || loading}
               className="flex-1 px-4 py-2 bg-cyan-600 rounded-lg hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              Добавить
+              {loading ? 'Добавление...' : 'Добавить'}
             </button>
           </div>
         </form>

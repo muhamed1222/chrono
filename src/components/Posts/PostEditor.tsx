@@ -21,6 +21,8 @@ const PostEditor: React.FC = () => {
   const [platforms, setPlatforms] = useState<('telegram' | 'vk' | 'instagram')[]>([]);
   const [scheduledDate, setScheduledDate] = useState('');
   const [scheduledTime, setScheduledTime] = useState('12:00');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   
   useEffect(() => {
     if (selectedPost) {
@@ -55,30 +57,40 @@ const PostEditor: React.FC = () => {
     }
   }, [selectedPost, selectedClient, selectedDate, posts, clients]);
   
-  const handleSavePost = () => {
+  const handleSavePost = async () => {
     const scheduledDateTime = formatLocalISO(new Date(`${scheduledDate}T${scheduledTime}`));
-    
-    if (selectedPost) {
-      updatePost(selectedPost, {
-        content,
-        media: mediaUrls,
-        clientId,
-        platforms,
-        scheduledFor: scheduledDateTime,
-        status: 'scheduled'
-      });
-    } else {
-      addPost({
-        content,
-        media: mediaUrls,
-        clientId,
-        platforms,
-        scheduledFor: scheduledDateTime,
-        status: 'scheduled'
-      });
+
+    setError('');
+    setLoading(true);
+
+    try {
+      if (selectedPost) {
+        await updatePost(selectedPost, {
+          content,
+          media: mediaUrls,
+          clientId,
+          platforms,
+          scheduledFor: scheduledDateTime,
+          status: 'scheduled'
+        });
+      } else {
+        await addPost({
+          content,
+          media: mediaUrls,
+          clientId,
+          platforms,
+          scheduledFor: scheduledDateTime,
+          status: 'scheduled'
+        });
+      }
+
+      setCurrentView('calendar');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'An error occurred';
+      setError(message);
+    } finally {
+      setLoading(false);
     }
-    
-    setCurrentView('calendar');
   };
   
   const handleAddMedia = () => {
@@ -124,16 +136,21 @@ const PostEditor: React.FC = () => {
           </button>
           <button
             onClick={handleSavePost}
-            disabled={!content || !clientId || platforms.length === 0}
+            disabled={!content || !clientId || platforms.length === 0 || loading}
             className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
           >
             <Send size={16} className="mr-2" />
-            Запланировать
+            {loading ? 'Сохранение...' : 'Запланировать'}
           </button>
         </div>
       </div>
       
       <div className="flex-1 p-6 overflow-y-auto">
+        {error && (
+          <div className="mb-4 px-4 py-2 bg-red-500/10 border border-red-500 text-red-400 rounded">
+            {error}
+          </div>
+        )}
         <div className="grid grid-cols-3 gap-6">
           <div className="col-span-2 space-y-6">
             <div className="space-y-2">
