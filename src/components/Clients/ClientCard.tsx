@@ -12,7 +12,8 @@ const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
     setSelectedClient,
     setCurrentView,
     updateClient,
-    deleteClient
+    deleteClient,
+    role
   } = useAppContext();
 
   const handleCreatePost = () => {
@@ -80,26 +81,28 @@ const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
           </div>
         </div>
         
-        <div className="flex space-x-2">
-          <button
-            onClick={handleCreatePost}
-            className="flex-1 py-2 rounded bg-cyan-600 hover:bg-cyan-500 text-sm font-medium transition-colors"
-          >
-            Создать публикацию
-          </button>
-          <button
-            onClick={handleEdit}
-            className="p-2 rounded bg-slate-700 hover:bg-slate-600 transition-colors"
-          >
-            <Edit size={16} />
-          </button>
-          <button
-            onClick={handleDelete}
-            className="p-2 rounded bg-slate-700 hover:bg-red-700 transition-colors"
-          >
-            <Trash size={16} />
-          </button>
-        </div>
+        {role !== 'viewer' && (
+          <div className="flex space-x-2">
+            <button
+              onClick={handleCreatePost}
+              className="flex-1 py-2 rounded bg-cyan-600 hover:bg-cyan-500 text-sm font-medium transition-colors"
+            >
+              Создать публикацию
+            </button>
+            <button
+              onClick={handleEdit}
+              className="p-2 rounded bg-slate-700 hover:bg-slate-600 transition-colors"
+            >
+              <Edit size={16} />
+            </button>
+            <button
+              onClick={handleDelete}
+              className="p-2 rounded bg-slate-700 hover:bg-red-700 transition-colors"
+            >
+              <Trash size={16} />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
