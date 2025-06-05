@@ -42,16 +42,21 @@
 
 - `VITE_SUPABASE_URL` — адрес проекта Supabase
 - `VITE_SUPABASE_ANON_KEY` — публичный ключ (Anon Key)
+- `VITE_SUPABASE_STORAGE_BUCKET` — имя бакета Supabase Storage (по умолчанию `media`)
+- `VITE_INACTIVITY_TIMEOUT_MINUTES` — время бездействия до авторазлогина в минутах (например, `0`)
 
 Если после запуска приложение показывает пустой экран, скорее всего, не заданы
-обязательные переменные `.env`.
-В консоли при этом появится сообщение "Missing Supabase environment variables".
+обязательные переменные `.env`. Отсутствие любой из этих переменных может
+вызвать ошибку во время выполнения, и в консоли появится сообщение "Missing
+Supabase environment variables".
 
 ## Пример `.env.example`
 
 ```bash
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_SUPABASE_STORAGE_BUCKET=media
+VITE_INACTIVITY_TIMEOUT_MINUTES=0
 ```
 
 ## Database setup
