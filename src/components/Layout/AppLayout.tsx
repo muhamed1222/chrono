@@ -5,6 +5,7 @@ import Calendar from '../Calendar/Calendar';
 import ClientsView from '../Clients/ClientsView';
 import PostEditor from '../Posts/PostEditor';
 import TemplatesView from '../Templates/TemplatesView';
+import ProductEditor from '../Products/ProductEditor';
 import Alert from '../Alert';
 
 const AppLayout: React.FC = () => {
@@ -18,6 +19,8 @@ const AppLayout: React.FC = () => {
         return <ClientsView />;
       case 'post-editor':
         return <PostEditor />;
+      case 'product-editor':
+        return <ProductEditor />;
       case 'templates':
         return <TemplatesView />;
       default:

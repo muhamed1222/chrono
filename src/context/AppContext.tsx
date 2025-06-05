@@ -11,7 +11,7 @@ interface AppContextType {
   clients: Client[];
   posts: Post[];
   templates: PostTemplate[];
-  currentView: 'calendar' | 'clients' | 'templates' | 'post-editor';
+  currentView: 'calendar' | 'clients' | 'templates' | 'post-editor' | 'product-editor';
   selectedClient: string | null;
   selectedDate: string | null;
   selectedPost: string | null;
@@ -19,7 +19,7 @@ interface AppContextType {
   role: UserRole | null;
   loading: boolean;
   error: string | null;
-  setCurrentView: (view: 'calendar' | 'clients' | 'templates' | 'post-editor') => void;
+  setCurrentView: (view: 'calendar' | 'clients' | 'templates' | 'post-editor' | 'product-editor') => void;
   setSelectedClient: (clientId: string | null) => void;
   setSelectedDate: (date: string | null) => void;
   setSelectedPost: (postId: string | null) => void;
@@ -44,7 +44,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [clients, setClients] = useState<Client[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [templates, setTemplates] = useState<PostTemplate[]>([]);
-  const [currentView, setCurrentView] = useState<'calendar' | 'clients' | 'templates' | 'post-editor'>('calendar');
+  const [currentView, setCurrentView] = useState<'calendar' | 'clients' | 'templates' | 'post-editor' | 'product-editor'>('calendar');
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
