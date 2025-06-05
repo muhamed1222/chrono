@@ -3,7 +3,7 @@ import { Calendar, Users, FileText, Lightbulb, LogOut } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
 
 const Sidebar: React.FC = () => {
-  const { currentView, setCurrentView } = useAppContext();
+  const { currentView, setCurrentView, signOut } = useAppContext();
 
   const navItems = [
     {
@@ -61,7 +61,10 @@ const Sidebar: React.FC = () => {
       </nav>
 
       <div className="p-4 border-t border-slate-700">
-        <button className="w-full flex items-center rounded-lg px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all">
+        <button
+          onClick={() => signOut()}
+          className="w-full flex items-center rounded-lg px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all"
+        >
           <LogOut size={20} className="mr-3" />
           Выйти
         </button>
