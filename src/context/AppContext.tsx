@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Client, Post, PostTemplate, UserRole } from '../types';
-import { supabase, handleSupabaseError } from '../lib/supabase';
+import { getSupabase, handleSupabaseError } from '../lib/supabase';
 import { apiRequest } from '../lib/api';
 import { formatLocalISO } from '../utils/time';
 import sanitizeHtml from 'sanitize-html';
@@ -58,8 +58,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const inactivityMs = inactivityMinutes > 0 ? inactivityMinutes * 60_000 : null;
 
   useEffect(() => {
-    if (!supabase) {
-      setError('Supabase credentials not configured');
+    try {
+      getSupabase();
+    } catch (err) {
+      setError(handleSupabaseError(err));
       setLoading(false);
     }
   }, []);
@@ -68,12 +70,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     // Check active session and set up auth listener
     const initializeAuth = async () => {
       try {
+        const supabase = getSupabase();
         // Get initial session
-        const { data: { session } } = await supabase!.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         setUser(session?.user ?? null);
 
         // Set up auth state listener
-        const { data: { subscription } } = supabase!.auth.onAuthStateChange((_event, session) => {
+        const {
+          data: { subscription },
+        } = supabase.auth.onAuthStateChange((_event, session) => {
           setUser(session?.user ?? null);
           if (!session) {
             // Clear data on logout
@@ -97,7 +104,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   useEffect(() => {
     const load = async () => {
       if (user) {
-        const { data } = await supabase!.from('roles').select('role').eq('user_id', user.id).single();
+        const { data } = await getSupabase()
+          .from('roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .single();
         setRole((data as { role: UserRole } | null)?.role ?? 'editor');
         await loadData();
       } else {
@@ -231,7 +242,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const signIn = async (email: string, password: string) => {
     try {
       setError(null);
-      const { error } = await supabase!.auth.signInWithPassword({
+      const { error } = await getSupabase().auth.signInWithPassword({
         email,
         password
       });
@@ -246,7 +257,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const signUp = async (email: string, password: string) => {
     try {
       setError(null);
-      const { error } = await supabase!.auth.signUp({
+      const { error } = await getSupabase().auth.signUp({
         email,
         password,
       });
@@ -263,7 +274,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   ) => {
     try {
       setError(null);
-      const { error } = await supabase!.auth.signInWithOAuth({
+      const { error } = await getSupabase().auth.signInWithOAuth({
         provider: provider as unknown as Provider,
       });
       if (error) throw error;
@@ -277,7 +288,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const signOut = async () => {
     try {
       setError(null);
-      const { error } = await supabase!.auth.signOut();
+      const { error } = await getSupabase().auth.signOut();
       if (error) throw error;
     } catch (err) {
       const errorMessage = handleSupabaseError(err);
@@ -289,7 +300,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const signOutAll = async () => {
     try {
       setError(null);
-      const { error } = await supabase!.auth.signOut({ scope: 'global' });
+      const { error } = await getSupabase().auth.signOut({ scope: 'global' });
       if (error) throw error;
     } catch (err) {
       const errorMessage = handleSupabaseError(err);
