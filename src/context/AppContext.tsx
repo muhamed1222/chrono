@@ -21,6 +21,8 @@ interface AppContextType {
   setSelectedDate: (date: string | null) => void;
   setSelectedPost: (postId: string | null) => void;
   addClient: (client: Omit<Client, 'id'>) => Promise<void>;
+  updateClient: (clientId: string, updates: Partial<Client>) => Promise<void>;
+  deleteClient: (clientId: string) => Promise<void>;
   addPost: (post: Omit<Post, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
   updatePost: (postId: string, updates: Partial<Post>) => Promise<void>;
   deletePost: (postId: string) => Promise<void>;
@@ -121,6 +123,42 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       
       if (error) throw error;
       setClients([...clients, data]);
+    } catch (err) {
+      const errorMessage = handleSupabaseError(err);
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  };
+
+  const updateClient = async (clientId: string, updates: Partial<Client>) => {
+    try {
+      setError(null);
+      const { data, error } = await supabase
+        .from('clients')
+        .update(updates)
+        .eq('id', clientId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      setClients(clients.map(c => (c.id === clientId ? data : c)));
+    } catch (err) {
+      const errorMessage = handleSupabaseError(err);
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  };
+
+  const deleteClient = async (clientId: string) => {
+    try {
+      setError(null);
+      const { error } = await supabase
+        .from('clients')
+        .delete()
+        .eq('id', clientId);
+
+      if (error) throw error;
+      setClients(clients.filter(c => c.id !== clientId));
     } catch (err) {
       const errorMessage = handleSupabaseError(err);
       setError(errorMessage);
@@ -257,6 +295,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setSelectedDate,
         setSelectedPost,
         addClient,
+        updateClient,
+        deleteClient,
         addPost,
         updatePost,
         deletePost,
