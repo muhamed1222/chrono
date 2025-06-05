@@ -58,6 +58,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [role, setRole] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [lastActivity, setLastActivity] = useState<number>(Date.now());
 
   const inactivityMinutes = Number(process.env.VITE_INACTIVITY_TIMEOUT_MINUTES || 0);
@@ -334,6 +335,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, [lastActivity, inactivityMs]);
 
   const clearError = () => setError(null);
+  const showToast = (message: string) => setToastMessage(message);
+  const clearToast = () => setToastMessage(null);
 
   return (
     <AppContext.Provider
@@ -350,6 +353,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         loading,
         error,
         toastMessage,
+        showToast,
+        clearToast,
         setCurrentView,
         setSelectedClient,
         setSelectedDate,
