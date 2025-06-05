@@ -5,6 +5,7 @@ import { useAppContext } from '../../context/AppContext';
 import { ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
 import CalendarDay from './CalendarDay';
 import ClientFilter from './ClientFilter';
+import { formatLocalISO } from '../../utils/time';
 
 const Calendar: React.FC = () => {
   const { clients, posts, setCurrentView, setSelectedDate } = useAppContext();
@@ -27,7 +28,7 @@ const Calendar: React.FC = () => {
   };
 
   const handleAddPost = (date: Date) => {
-    setSelectedDate(date.toISOString());
+    setSelectedDate(formatLocalISO(date));
     setCurrentView('post-editor');
   };
 

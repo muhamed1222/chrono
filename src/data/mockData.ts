@@ -85,7 +85,7 @@ export const mockPosts: Post[] = [
     content: 'Сегодня в нашем кафе новое сезонное меню! Приходите попробовать наши фирменные десерты с тыквой и специями 🍂',
     media: ['https://images.pexels.com/photos/1055272/pexels-photo-1055272.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'],
     platforms: ['telegram', 'instagram'],
-    scheduledFor: '2025-10-01T12:00:00Z',
+    scheduledFor: '2025-10-01T12:00:00+03:00',
     status: 'scheduled',
     createdAt: '2025-09-25T10:30:00Z',
     updatedAt: '2025-09-25T11:45:00Z'
@@ -96,7 +96,7 @@ export const mockPosts: Post[] = [
     content: 'Новая коллекция уже в магазинах! Используйте промокод URBAN25 для скидки 15% на все товары до конца недели 👕',
     media: ['https://images.pexels.com/photos/5709661/pexels-photo-5709661.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'],
     platforms: ['vk', 'instagram'],
-    scheduledFor: '2025-10-02T15:00:00Z',
+    scheduledFor: '2025-10-02T15:00:00+03:00',
     status: 'draft',
     createdAt: '2025-09-26T09:15:00Z',
     updatedAt: '2025-09-26T09:15:00Z'
@@ -107,7 +107,7 @@ export const mockPosts: Post[] = [
     content: '5 простых медитаций, которые можно делать прямо на рабочем месте. Сохраняйте, чтобы не потерять 🧘‍♀️',
     media: ['https://images.pexels.com/photos/3560044/pexels-photo-3560044.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'],
     platforms: ['telegram', 'vk', 'instagram'],
-    scheduledFor: '2025-10-03T08:00:00Z',
+    scheduledFor: '2025-10-03T08:00:00+03:00',
     status: 'scheduled',
     createdAt: '2025-09-27T14:20:00Z',
     updatedAt: '2025-09-27T16:35:00Z'
