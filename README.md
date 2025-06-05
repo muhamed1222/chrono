@@ -43,3 +43,21 @@
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 ```
+
+## Database setup
+
+Для инициализации базы данных выполните команду:
+
+```bash
+supabase db reset
+```
+
+Она очистит базу и заново применит миграции из каталога `supabase/migrations/`.
+Если требуется только применить свежие миграции, запустите:
+
+```bash
+supabase migration up
+```
+
+Перед выполнением убедитесь, что проект связан с вашим экземпляром Supabase.
+Если связь не настроена, выполните `supabase link` и следуйте инструкциям CLI.
