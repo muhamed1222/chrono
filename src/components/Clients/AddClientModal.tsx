@@ -1,0 +1,128 @@
+import React, { useState } from 'react';
+import { X } from 'lucide-react';
+import { useAppContext } from '../../context/AppContext';
+
+interface AddClientModalProps {
+  onClose: () => void;
+}
+
+const AddClientModal: React.FC<AddClientModalProps> = ({ onClose }) => {
+  const { addClient } = useAppContext();
+  const [name, setName] = useState('');
+  const [industry, setIndustry] = useState('');
+  const [logo, setLogo] = useState('');
+  const [color, setColor] = useState('#F97316');
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    addClient({
+      name,
+      industry,
+      logo: logo || undefined,
+      color,
+      socialAccounts: []
+    });
+    
+    onClose();
+  };
+  
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-slate-800 rounded-lg w-full max-w-md p-6 relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-slate-400 hover:text-white"
+        >
+          <X size={20} />
+        </button>
+        
+        <h2 className="text-xl font-bold mb-6">Добавить клиента</h2>
+        
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-slate-300">
+                Название
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="w-full p-3 bg-slate-700 rounded-lg border border-slate-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                placeholder="Например: Beauty Shop"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-slate-300">
+                Ниша
+              </label>
+              <input
+                type="text"
+                value={industry}
+                onChange={(e) => setIndustry(e.target.value)}
+                required
+                className="w-full p-3 bg-slate-700 rounded-lg border border-slate-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                placeholder="Например: Косметика"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-slate-300">
+                URL логотипа (необязательно)
+              </label>
+              <input
+                type="url"
+                value={logo}
+                onChange={(e) => setLogo(e.target.value)}
+                className="w-full p-3 bg-slate-700 rounded-lg border border-slate-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                placeholder="https://example.com/logo.png"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-slate-300">
+                Фирменный цвет
+              </label>
+              <div className="flex space-x-3">
+                <input
+                  type="color"
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+                  className="w-12 h-12 rounded cursor-pointer"
+                />
+                <input
+                  type="text"
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+                  className="flex-1 p-3 bg-slate-700 rounded-lg border border-slate-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+          </div>
+          
+          <div className="mt-6 flex space-x-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-4 py-2 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors"
+            >
+              Отмена
+            </button>
+            <button
+              type="submit"
+              disabled={!name || !industry}
+              className="flex-1 px-4 py-2 bg-cyan-600 rounded-lg hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Добавить
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default AddClientModal;
