@@ -6,6 +6,7 @@ import ClientsView from '../Clients/ClientsView';
 import PostEditor from '../Posts/PostEditor';
 import ProductEditor from '../Posts/ProductEditor';
 import TemplatesView from '../Templates/TemplatesView';
+import ProductEditor from '../Products/ProductEditor';
 import Alert from '../Alert';
 
 const AppLayout: React.FC = () => {
