@@ -19,6 +19,9 @@ interface AppContextType {
   role: UserRole | null;
   loading: boolean;
   error: string | null;
+  toastMessage: string | null;
+  showToast: (message: string) => void;
+  clearToast: () => void;
   setCurrentView: (view: 'calendar' | 'clients' | 'templates' | 'post-editor' | 'product-editor') => void;
   setSelectedClient: (clientId: string | null) => void;
   setSelectedDate: (date: string | null) => void;
@@ -55,7 +58,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [role, setRole] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [notification, setNotification] = useState<string | null>(null);
   const [lastActivity, setLastActivity] = useState<number>(Date.now());
 
   const inactivityMinutes = Number(process.env.VITE_INACTIVITY_TIMEOUT_MINUTES || 0);
@@ -332,8 +334,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, [lastActivity, inactivityMs]);
 
   const clearError = () => setError(null);
-  const showNotification = (message: string) => setNotification(message);
-  const clearNotification = () => setNotification(null);
 
   return (
     <AppContext.Provider
@@ -349,6 +349,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         role,
         loading,
         error,
+        toastMessage,
         setCurrentView,
         setSelectedClient,
         setSelectedDate,
@@ -366,9 +367,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         signOutAll,
         lastActivity,
         clearError,
-        notification,
-        showNotification,
-        clearNotification,
       }}
     >
       {children}

@@ -17,8 +17,6 @@ const PostEditor: React.FC = () => {
     setCurrentView,
     addPost,
     updatePost,
-    showNotification,
-    role
   } = useAppContext();
   
   const [content, setContent] = useState('');
@@ -92,8 +90,6 @@ const PostEditor: React.FC = () => {
           status: 'scheduled'
         });
       }
-
-      showNotification('Публикация сохранена');
       setCurrentView('calendar');
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'An error occurred';

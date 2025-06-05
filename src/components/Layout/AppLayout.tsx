@@ -11,7 +11,7 @@ import Alert from '../Alert';
 import Toast from '../ui/Toast';
 
 const AppLayout: React.FC = () => {
-  const { currentView } = useAppContext();
+  const { currentView, toastMessage, clearToast } = useAppContext();
 
   const renderCurrentView = () => {
     switch (currentView) {
@@ -38,6 +38,7 @@ const AppLayout: React.FC = () => {
           <Alert />
           <Toast />
         </div>
+        <Toast message={toastMessage} onClose={clearToast} />
         <div className="flex-1 overflow-y-auto">
           {renderCurrentView()}
         </div>
