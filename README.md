@@ -36,12 +36,14 @@
 
 - `VITE_SUPABASE_URL` — адрес проекта Supabase
 - `VITE_SUPABASE_ANON_KEY` — публичный ключ (Anon Key)
+- `VITE_SUPABASE_STORAGE_BUCKET` — название бакета Storage для загрузки файлов
 
 ## Пример `.env.example`
 
 ```bash
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_SUPABASE_STORAGE_BUCKET=media
 ```
 
 ## Database setup
