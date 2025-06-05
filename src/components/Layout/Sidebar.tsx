@@ -87,6 +87,8 @@ const Sidebar: React.FC = () => {
         </ul>
       </nav>
 
+      <div className="p-2 md:p-4 border-t border-slate-700">
+        <Button
           onClick={handleSignOut}
           disabled={isSigningOut}
           className="w-full flex items-center rounded-lg px-4 py-3 text-sm text-slate-300 hover:bg-slate-700/50 hover:text-white"
