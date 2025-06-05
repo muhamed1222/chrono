@@ -4,6 +4,33 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const camelToSnake = (str: string): string =>
+  str.replace(/([A-Z])/g, (_, c) => `_${c.toLowerCase()}`);
+
+const snakeToCamel = (str: string): string =>
+  str.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+
+const convertKeys = (
+  obj: unknown,
+  converter: (key: string) => string
+): unknown => {
+  if (Array.isArray(obj)) {
+    return obj.map((v) => convertKeys(v, converter));
+  }
+  if (obj && typeof obj === 'object' && obj.constructor === Object) {
+    return Object.fromEntries(
+      Object.entries(obj as Record<string, unknown>).map(([k, v]) => [
+        converter(k),
+        convertKeys(v, converter)
+      ])
+    );
+  }
+  return obj;
+};
+
+const toSnake = (obj: unknown): unknown => convertKeys(obj, camelToSnake);
+const toCamel = (obj: unknown): unknown => convertKeys(obj, snakeToCamel);
+
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
 
@@ -20,29 +47,31 @@ app.use(express.json());
 app.get('/api/clients', async (_req, res) => {
   const { data, error } = await supabase.from('clients').select('*').order('name');
   if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+  res.json(toCamel(data));
 });
 
 app.post('/api/clients', async (req, res) => {
+  const payload = toSnake(req.body);
   const { data, error } = await supabase
     .from('clients')
-    .insert(req.body)
+    .insert(payload)
     .select()
     .single();
   if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+  res.json(toCamel(data));
 });
 
 app.put('/api/clients/:id', async (req, res) => {
   const { id } = req.params;
+  const payload = toSnake(req.body);
   const { data, error } = await supabase
     .from('clients')
-    .update(req.body)
+    .update(payload)
     .eq('id', id)
     .select()
     .single();
   if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+  res.json(toCamel(data));
 });
 
 app.delete('/api/clients/:id', async (req, res) => {
@@ -54,31 +83,33 @@ app.delete('/api/clients/:id', async (req, res) => {
 
 // Posts endpoints
 app.get('/api/posts', async (_req, res) => {
-  const { data, error } = await supabase.from('posts').select('*').order('scheduledFor');
+  const { data, error } = await supabase.from('posts').select('*').order('scheduled_for');
   if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+  res.json(toCamel(data));
 });
 
 app.post('/api/posts', async (req, res) => {
+  const payload = toSnake(req.body);
   const { data, error } = await supabase
     .from('posts')
-    .insert(req.body)
+    .insert(payload)
     .select()
     .single();
   if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+  res.json(toCamel(data));
 });
 
 app.put('/api/posts/:id', async (req, res) => {
   const { id } = req.params;
+  const payload = toSnake(req.body);
   const { data, error } = await supabase
     .from('posts')
-    .update(req.body)
+    .update(payload)
     .eq('id', id)
     .select()
     .single();
   if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+  res.json(toCamel(data));
 });
 
 app.delete('/api/posts/:id', async (req, res) => {
