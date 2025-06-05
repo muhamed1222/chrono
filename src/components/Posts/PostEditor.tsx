@@ -318,6 +318,7 @@ const PostEditor: React.FC = () => {
                   return (
                     <label
                       key={platform.id}
+                      aria-label={`Выбрать ${platform.name}`}
                       className={`flex items-center p-3 rounded-lg border ${
                         isAvailable
                           ? isSelected
@@ -332,7 +333,6 @@ const PostEditor: React.FC = () => {
                         checked={isSelected}
                         disabled={!isAvailable}
                         onChange={togglePlatform}
-                        aria-label={`Выбрать ${platform.name}`}
                         className="sr-only"
                       />
                       <div
