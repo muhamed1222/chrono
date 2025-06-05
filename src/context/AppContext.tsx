@@ -32,6 +32,8 @@ interface AppContextType {
   signUp: (email: string, password: string) => Promise<void>;
   signInWithOAuth: (provider: 'telegram' | 'vk' | 'google') => Promise<void>;
   signOut: () => Promise<void>;
+  signOutAll: () => Promise<void>;
+  lastActivity: number;
   clearError: () => void;
 }
 
@@ -49,6 +51,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [role, setRole] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lastActivity, setLastActivity] = useState<number>(Date.now());
+
+  const inactivityMinutes = Number(import.meta.env.VITE_INACTIVITY_TIMEOUT_MINUTES || 0);
+  const inactivityMs = inactivityMinutes > 0 ? inactivityMinutes * 60_000 : null;
 
   useEffect(() => {
     // Check active session and set up auth listener
@@ -302,6 +308,36 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
+  const signOutAll = async () => {
+    try {
+      setError(null);
+      const { error } = await supabase.auth.signOut({ scope: 'global' });
+      if (error) throw error;
+    } catch (err) {
+      const errorMessage = handleSupabaseError(err);
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  };
+
+  useEffect(() => {
+    if (!inactivityMs) return;
+    const update = () => setLastActivity(Date.now());
+    const events = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
+    events.forEach((e) => window.addEventListener(e, update));
+    return () => {
+      events.forEach((e) => window.removeEventListener(e, update));
+    };
+  }, [inactivityMs]);
+
+  useEffect(() => {
+    if (!inactivityMs) return;
+    const timer = setTimeout(() => {
+      signOut();
+    }, inactivityMs);
+    return () => clearTimeout(timer);
+  }, [lastActivity, inactivityMs]);
+
   const clearError = () => setError(null);
 
   return (
@@ -332,6 +368,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         signUp,
         signInWithOAuth,
         signOut,
+        signOutAll,
+        lastActivity,
         clearError,
       }}
     >
