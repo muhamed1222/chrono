@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Client, Post, PostTemplate } from '../types';
+import { Client, Post, PostTemplate, UserRole } from '../types';
 import { supabase, handleSupabaseError } from '../lib/supabase';
 import { formatLocalISO } from '../utils/time';
 import sanitizeHtml from 'sanitize-html';
@@ -14,6 +14,7 @@ interface AppContextType {
   selectedDate: string | null;
   selectedPost: string | null;
   user: User | null;
+  role: UserRole | null;
   loading: boolean;
   error: string | null;
   setCurrentView: (view: 'calendar' | 'clients' | 'templates' | 'post-editor') => void;
@@ -43,6 +44,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [role, setRole] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -77,9 +79,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, []);
 
   useEffect(() => {
-    if (user) {
-      loadData();
-    }
+    const load = async () => {
+      if (user) {
+        const { data } = await supabase.from('roles').select('role').eq('user_id', user.id).single();
+        setRole((data as { role: UserRole } | null)?.role ?? 'editor');
+        await loadData();
+      } else {
+        setRole(null);
+      }
+    };
+    void load();
   }, [user]);
 
   const loadData = async () => {
@@ -288,6 +297,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         selectedDate,
         selectedPost,
         user,
+        role,
         loading,
         error,
         setCurrentView,
