@@ -3,7 +3,7 @@ import { Client, Post, PostTemplate, UserRole } from '../types';
 import { getSupabase, handleSupabaseError } from '../lib/supabase';
 import { apiRequest } from '../lib/api';
 import { formatLocalISO } from '../utils/time';
-import sanitizeHtml from 'sanitize-html';
+import DOMPurify from 'dompurify';
 import { User } from '@supabase/supabase-js';
 import type { Provider } from '@supabase/auth-js';
 
@@ -185,7 +185,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const addPost = async (post: Omit<Post, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {
       setError(null);
-      const sanitizedContent = sanitizeHtml(post.content);
+      const sanitizedContent = DOMPurify.sanitize(post.content);
       const now = formatLocalISO(new Date());
 
       const data = await apiRequest<Post>('/posts', {
@@ -210,7 +210,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     try {
       setError(null);
       if (updates.content) {
-        updates.content = sanitizeHtml(updates.content);
+        updates.content = DOMPurify.sanitize(updates.content);
       }
       updates.updatedAt = formatLocalISO(new Date());
 
