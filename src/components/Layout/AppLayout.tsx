@@ -25,7 +25,7 @@ const AppLayout: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen bg-red-900 text-white">
+    <div className="flex h-screen bg-blue-900 text-white">
       <Sidebar />
       <main className="flex-1 overflow-y-auto">
         {renderCurrentView()}
