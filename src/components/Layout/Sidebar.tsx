@@ -3,8 +3,9 @@ import { Calendar, Users, FileText, Lightbulb, LogOut, Loader } from 'lucide-rea
 import { useAppContext } from '../../context/AppContext';
 
 const Sidebar: React.FC = () => {
-  const { currentView, setCurrentView, signOut, error, clearError } = useAppContext();
+  const { currentView, setCurrentView, signOut, signOutAll, error, clearError } = useAppContext();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [isSigningOutAll, setIsSigningOutAll] = useState(false);
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
@@ -15,6 +16,18 @@ const Sidebar: React.FC = () => {
       // error is handled in context
     } finally {
       setIsSigningOut(false);
+    }
+  };
+
+  const handleSignOutAll = async () => {
+    setIsSigningOutAll(true);
+    clearError();
+    try {
+      await signOutAll();
+    } catch {
+      // error is handled in context
+    } finally {
+      setIsSigningOutAll(false);
     }
   };
 
@@ -85,6 +98,18 @@ const Sidebar: React.FC = () => {
             <LogOut size={20} className="mr-3" />
           )}
           Выйти
+        </button>
+        <button
+          onClick={handleSignOutAll}
+          disabled={isSigningOutAll}
+          className="w-full flex items-center rounded-lg px-4 py-3 mt-2 text-sm font-medium text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isSigningOutAll ? (
+            <Loader size={20} className="mr-3 animate-spin" />
+          ) : (
+            <LogOut size={20} className="mr-3" />
+          )}
+          Выйти везде
         </button>
         {error && (
           <div className="mt-4 px-4 py-2 bg-red-500/10 border border-red-500 text-red-400 rounded">
