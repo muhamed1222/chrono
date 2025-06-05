@@ -64,7 +64,7 @@ const Calendar: React.FC = () => {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="p-6 border-b border-slate-700">
+      <div className="p-4 md:p-6 border-b border-slate-700">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">Календарь контента</h2>
           <div className="flex items-center space-x-4">
@@ -103,7 +103,7 @@ const Calendar: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-7 gap-4">
+        <div className="grid grid-cols-4 md:grid-cols-7 gap-4">
           {weekDays.map((day) => (
             <div key={`header-${day}`} className="text-center">
               <p className="text-sm text-slate-400 capitalize">
@@ -114,7 +114,7 @@ const Calendar: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex-1 p-6 grid grid-cols-7 gap-4 h-full overflow-y-auto">
+      <div className="flex-1 p-4 md:p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 h-full overflow-y-auto">
         {weekDays.map((day) => {
           const postsForDay = filteredPosts.filter(post => 
             isSameDay(new Date(post.scheduledFor), day)

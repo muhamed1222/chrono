@@ -167,7 +167,7 @@ const PostEditor: React.FC = () => {
   
   return (
     <div className="h-full flex flex-col">
-      <div className="p-6 border-b border-slate-700 flex justify-between items-center">
+      <div className="p-4 md:p-6 border-b border-slate-700 flex justify-between items-center">
         <h2 className="text-2xl font-bold">
           {selectedPost ? 'Редактировать публикацию' : 'Новая публикация'}
         </h2>
@@ -191,14 +191,14 @@ const PostEditor: React.FC = () => {
         </div>
       </div>
       
-      <div className="flex-1 p-6 overflow-y-auto">
+      <div className="flex-1 p-4 md:p-6 overflow-y-auto">
         {error && (
           <div className="mb-4 px-4 py-2 bg-red-500/10 border border-red-500 text-red-400 rounded">
             {error}
           </div>
         )}
-        <div className="grid grid-cols-3 gap-6">
-          <div className="col-span-2 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-slate-300">Клиент</label>
               <select
@@ -279,7 +279,7 @@ const PostEditor: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <div className="p-6 border-2 border-dashed border-slate-700 rounded-lg flex items-center justify-center">
+                <div className="p-4 md:p-6 border-2 border-dashed border-slate-700 rounded-lg flex items-center justify-center">
                   <p className="text-slate-500 text-sm">Нет добавленных медиафайлов</p>
                 </div>
               )}

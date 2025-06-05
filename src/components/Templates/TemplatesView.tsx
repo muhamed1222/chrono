@@ -13,14 +13,14 @@ const TemplatesView: React.FC = () => {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="p-6 border-b border-slate-700">
+      <div className="p-4 md:p-6 border-b border-slate-700">
         <h2 className="text-2xl font-bold">Идеи для контента</h2>
         <p className="text-slate-400 mt-1">
           Готовые шаблоны для различных типов публикаций
         </p>
       </div>
 
-      <div className="flex-1 p-6 overflow-y-auto">
+      <div className="flex-1 p-4 md:p-6 overflow-y-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {templates.map((template) => (
             <div 
