@@ -24,6 +24,7 @@ interface AppContextType {
   updatePost: (postId: string, updates: Partial<Post>) => Promise<void>;
   deletePost: (postId: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   clearError: () => void;
 }
@@ -208,6 +209,21 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
+  const signUp = async (email: string, password: string) => {
+    try {
+      setError(null);
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+      if (error) throw error;
+    } catch (err) {
+      const errorMessage = handleSupabaseError(err);
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  };
+
   const signOut = async () => {
     try {
       setError(null);
@@ -244,6 +260,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         updatePost,
         deletePost,
         signIn,
+        signUp,
         signOut,
         clearError,
       }}
