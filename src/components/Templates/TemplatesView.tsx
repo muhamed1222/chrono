@@ -3,9 +3,9 @@ import { Lightbulb, Copy } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
 
 const TemplatesView: React.FC = () => {
-  const { templates, setCurrentView, setSelectedClient } = useAppContext();
-  
-  const handleUseTemplate = (content: string) => {
+  const { templates, setCurrentView } = useAppContext();
+
+  const handleUseTemplate = () => {
     // We would normally set the template content here in a real app
     // but for the MVP demo we just navigate to the post editor
     setCurrentView('post-editor');
@@ -43,7 +43,7 @@ const TemplatesView: React.FC = () => {
               </div>
               
               <button
-                onClick={() => handleUseTemplate(template.content)}
+                onClick={handleUseTemplate}
                 className="w-full py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-sm font-medium transition-colors flex items-center justify-center"
               >
                 <Copy size={14} className="mr-2" />
