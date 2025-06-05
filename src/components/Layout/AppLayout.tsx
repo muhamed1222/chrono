@@ -36,7 +36,6 @@ const AppLayout: React.FC = () => {
       <main className="flex-1 flex flex-col overflow-y-auto">
         <div className="p-2 md:p-4">
           <Alert />
-          <Toast />
         </div>
         <Toast message={toastMessage} onClose={clearToast} />
         <div className="flex-1 overflow-y-auto">
