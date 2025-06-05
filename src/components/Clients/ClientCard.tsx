@@ -8,11 +8,29 @@ interface ClientCardProps {
 }
 
 const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
-  const { setSelectedClient, setCurrentView } = useAppContext();
+  const {
+    setSelectedClient,
+    setCurrentView,
+    updateClient,
+    deleteClient
+  } = useAppContext();
 
   const handleCreatePost = () => {
     setSelectedClient(client.id);
     setCurrentView('post-editor');
+  };
+
+  const handleEdit = async () => {
+    const newName = window.prompt('Новое название клиента', client.name);
+    if (newName && newName !== client.name) {
+      await updateClient(client.id, { name: newName });
+    }
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm(`Удалить клиента "${client.name}"?`)) {
+      await deleteClient(client.id);
+    }
   };
 
   return (
@@ -69,10 +87,16 @@ const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
           >
             Создать публикацию
           </button>
-          <button className="p-2 rounded bg-slate-700 hover:bg-slate-600 transition-colors">
+          <button
+            onClick={handleEdit}
+            className="p-2 rounded bg-slate-700 hover:bg-slate-600 transition-colors"
+          >
             <Edit size={16} />
           </button>
-          <button className="p-2 rounded bg-slate-700 hover:bg-red-700 transition-colors">
+          <button
+            onClick={handleDelete}
+            className="p-2 rounded bg-slate-700 hover:bg-red-700 transition-colors"
+          >
             <Trash size={16} />
           </button>
         </div>
