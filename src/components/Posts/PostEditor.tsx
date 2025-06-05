@@ -17,6 +17,8 @@ const PostEditor: React.FC = () => {
   
   const [content, setContent] = useState('');
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
+  const [mediaUrlInput, setMediaUrlInput] = useState('');
+  const [mediaInputError, setMediaInputError] = useState('');
   const [clientId, setClientId] = useState('');
   const [platforms, setPlatforms] = useState<('telegram' | 'vk' | 'instagram')[]>([]);
   const [scheduledDate, setScheduledDate] = useState('');
@@ -94,9 +96,13 @@ const PostEditor: React.FC = () => {
   };
   
   const handleAddMedia = () => {
-    const url = prompt('Введите URL изображения:');
-    if (url) {
-      setMediaUrls([...mediaUrls, url]);
+    try {
+      const url = new URL(mediaUrlInput.trim());
+      setMediaUrls([...mediaUrls, url.toString()]);
+      setMediaUrlInput('');
+      setMediaInputError('');
+    } catch {
+      setMediaInputError('Некорректный URL');
     }
   };
   
@@ -179,16 +185,26 @@ const PostEditor: React.FC = () => {
             </div>
             
             <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <label className="block text-sm font-medium text-slate-300">Медиа</label>
+              <label className="block text-sm font-medium text-slate-300">Медиа</label>
+              <div className="flex space-x-2">
+                <input
+                  type="url"
+                  value={mediaUrlInput}
+                  onChange={(e) => setMediaUrlInput(e.target.value)}
+                  placeholder="https://example.com/image.jpg"
+                  className="flex-1 p-3 bg-slate-800 rounded-lg border border-slate-700 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                />
                 <button
                   onClick={handleAddMedia}
-                  className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center"
+                  className="px-3 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition-colors flex items-center"
                 >
                   <Image size={14} className="mr-1" />
                   Добавить
                 </button>
               </div>
+              {mediaInputError && (
+                <p className="text-sm text-red-500">{mediaInputError}</p>
+              )}
               
               {mediaUrls.length > 0 ? (
                 <div className="grid grid-cols-3 gap-3">
