@@ -61,7 +61,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [lastActivity, setLastActivity] = useState<number>(Date.now());
 
-  const inactivityMinutes = Number(process.env.VITE_INACTIVITY_TIMEOUT_MINUTES || 0);
+  const inactivityMinutes = Number(
+    import.meta.env.VITE_INACTIVITY_TIMEOUT_MINUTES || 0
+  );
   const inactivityMs = inactivityMinutes > 0 ? inactivityMinutes * 60_000 : null;
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Users, FileText, Lightbulb, Package, LogOut, Loader } from 'lucide-react';
+import { Calendar, Users, FileText, Lightbulb, LogOut, Loader } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
 import Button from '../ui/Button';
 
