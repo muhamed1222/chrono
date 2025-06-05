@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
 
 const AuthLayout: React.FC = () => {
-  const { signIn } = useAppContext();
+  const { signIn, signUp } = useAppContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isRegister, setIsRegister] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -14,20 +15,25 @@ const AuthLayout: React.FC = () => {
     setLoading(true);
 
     try {
-      await signIn(email, password);
-    } catch (err: any) {
-      setError(err.message || 'An error occurred during sign in');
+      if (isRegister) {
+        await signUp(email, password);
+      } else {
+        await signIn(email, password);
+      }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'An error occurred';
+      setError(message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-blue-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-red-900 flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8 bg-slate-800 p-8 rounded-lg">
         <div>
           <h2 className="text-center text-3xl font-bold text-white">
-            Войти в Chrono
+            {isRegister ? 'Регистрация в Chrono' : 'Войти в Chrono'}
           </h2>
           <p className="mt-2 text-center text-sm text-slate-400">
             Контент по расписанию
@@ -85,11 +91,36 @@ const AuthLayout: React.FC = () => {
               {loading ? (
                 <div className="w-5 h-5 border-t-2 border-white rounded-full animate-spin"></div>
               ) : (
-                'Войти'
+                isRegister ? 'Зарегистрироваться' : 'Войти'
               )}
-            </button>
-          </div>
-        </form>
+          </button>
+        </div>
+        <div className="text-center">
+          {isRegister ? (
+            <p className="text-sm text-slate-400">
+              Уже есть аккаунт?{' '}
+              <button
+                type="button"
+                className="text-cyan-500 hover:underline"
+                onClick={() => setIsRegister(false)}
+              >
+                Войти
+              </button>
+            </p>
+          ) : (
+            <p className="text-sm text-slate-400">
+              Нет аккаунта?{' '}
+              <button
+                type="button"
+                className="text-cyan-500 hover:underline"
+                onClick={() => setIsRegister(true)}
+              >
+                Зарегистрироваться
+              </button>
+            </p>
+          )}
+        </div>
+      </form>
       </div>
     </div>
   );
