@@ -27,11 +27,15 @@
    ```bash
    npm run dev
    ```
-4. Для сборки production-версии выполните:
+4. Запустите сервер API:
+   ```bash
+   npm run start:api
+   ```
+5. Для сборки production-версии выполните:
    ```bash
    npm run build
    ```
-5. Проверьте код линтером:
+6. Проверьте код линтером:
    ```bash
    npm run lint
    ```
