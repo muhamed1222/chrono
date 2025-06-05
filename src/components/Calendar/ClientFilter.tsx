@@ -58,13 +58,28 @@ const ClientFilter: React.FC<ClientFilterProps> = ({ clients, selectedClients, o
           </div>
           <div className="mt-2 max-h-60 overflow-y-auto">
             {clients.map(client => (
-              <div
+              <label
                 key={client.id}
                 className="flex items-center px-3 py-2 hover:bg-slate-700 rounded cursor-pointer"
-                onClick={() => toggleClient(client.id)}
               >
-                <div className="flex-shrink-0 w-6 h-6 rounded-full overflow-hidden mr-3" style={{ backgroundColor: client.color }}>
-                  {client.logo && <img src={client.logo} alt={client.name} className="w-full h-full object-cover" />}
+                <input
+                  type="checkbox"
+                  value={client.id}
+                  checked={selectedClients.includes(client.id)}
+                  onChange={() => toggleClient(client.id)}
+                  className="hidden"
+                />
+                <div
+                  className="flex-shrink-0 w-6 h-6 rounded-full overflow-hidden mr-3"
+                  style={{ backgroundColor: client.color }}
+                >
+                  {client.logo && (
+                    <img
+                      src={client.logo}
+                      alt={client.name}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                 </div>
                 <span className="flex-1 text-sm">{client.name}</span>
                 <div className="w-5 h-5 rounded border border-slate-600 flex items-center justify-center">
@@ -72,7 +87,7 @@ const ClientFilter: React.FC<ClientFilterProps> = ({ clients, selectedClients, o
                     <Check size={14} className="text-cyan-400" />
                   )}
                 </div>
-              </div>
+              </label>
             ))}
           </div>
         </div>
