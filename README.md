@@ -50,21 +50,24 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 
 ## Database setup
 
-Для инициализации базы данных выполните команду:
+If the project isn't linked to your Supabase instance yet, run:
+
+```bash
+supabase link
+```
+
+To initialize the database from scratch, execute:
 
 ```bash
 supabase db reset
 ```
 
-Она очистит базу и заново применит миграции из каталога `supabase/migrations/`.
-Если требуется только применить свежие миграции, запустите:
+This command uses the migration scripts located in `supabase/migrations/` to
+recreate the schema. When you only need to apply new migrations, run:
 
 ```bash
 supabase migration up
 ```
-
-Перед выполнением убедитесь, что проект связан с вашим экземпляром Supabase.
-Если связь не настроена, выполните `supabase link` и следуйте инструкциям CLI.
 
 ## UI Components
 
