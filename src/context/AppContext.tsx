@@ -60,13 +60,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [error, setError] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [lastActivity, setLastActivity] = useState<number>(Date.now());
+  const [notification, setNotification] = useState<string | null>(null);
 
   const inactivityMinutes = Number(
-    import.meta.env.VITE_INACTIVITY_TIMEOUT_MINUTES ??
-      (typeof process !== 'undefined'
-        ? process.env.VITE_INACTIVITY_TIMEOUT_MINUTES
-        : undefined) ??
-      0
   );
   const inactivityMs = inactivityMinutes > 0 ? inactivityMinutes * 60_000 : null;
 
@@ -343,6 +339,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const clearError = () => setError(null);
   const showToast = (message: string) => setToastMessage(message);
   const clearToast = () => setToastMessage(null);
+  const showNotification = (message: string) => setNotification(message);
+  const clearNotification = () => setNotification(null);
 
   return (
     <AppContext.Provider
@@ -376,10 +374,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         signInWithOAuth,
         signOut,
         signOutAll,
-        showToast,
-        clearToast,
         lastActivity,
         clearError,
+        notification,
+        showNotification,
+        clearNotification,
       }}
     >
       {children}
