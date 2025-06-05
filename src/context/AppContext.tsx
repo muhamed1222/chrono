@@ -36,6 +36,9 @@ interface AppContextType {
   signOutAll: () => Promise<void>;
   lastActivity: number;
   clearError: () => void;
+  notification: string | null;
+  showNotification: (message: string) => void;
+  clearNotification: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -52,6 +55,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [role, setRole] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [notification, setNotification] = useState<string | null>(null);
   const [lastActivity, setLastActivity] = useState<number>(Date.now());
 
   const inactivityMinutes = Number(process.env.VITE_INACTIVITY_TIMEOUT_MINUTES || 0);
@@ -328,6 +332,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, [lastActivity, inactivityMs]);
 
   const clearError = () => setError(null);
+  const showNotification = (message: string) => setNotification(message);
+  const clearNotification = () => setNotification(null);
 
   return (
     <AppContext.Provider
@@ -360,6 +366,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         signOutAll,
         lastActivity,
         clearError,
+        notification,
+        showNotification,
+        clearNotification,
       }}
     >
       {children}
