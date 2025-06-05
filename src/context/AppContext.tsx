@@ -39,6 +39,9 @@ interface AppContextType {
   signOutAll: () => Promise<void>;
   lastActivity: number;
   clearError: () => void;
+  notification: string | null;
+  showNotification: (message: string) => void;
+  clearNotification: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -55,10 +58,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [role, setRole] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [lastActivity, setLastActivity] = useState<number>(Date.now());
 
-  const inactivityMinutes = Number(import.meta.env.VITE_INACTIVITY_TIMEOUT_MINUTES || 0);
+  const inactivityMinutes = Number(process.env.VITE_INACTIVITY_TIMEOUT_MINUTES || 0);
   const inactivityMs = inactivityMinutes > 0 ? inactivityMinutes * 60_000 : null;
 
   useEffect(() => {
@@ -332,8 +334,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, [lastActivity, inactivityMs]);
 
   const clearError = () => setError(null);
-  const showToast = (message: string) => setToastMessage(message);
-  const clearToast = () => setToastMessage(null);
 
   return (
     <AppContext.Provider
@@ -367,8 +367,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         signOutAll,
         lastActivity,
         clearError,
-        showToast,
-        clearToast,
       }}
     >
       {children}

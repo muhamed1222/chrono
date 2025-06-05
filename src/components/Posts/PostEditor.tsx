@@ -17,8 +17,6 @@ const PostEditor: React.FC = () => {
     setCurrentView,
     addPost,
     updatePost,
-    role,
-    showToast
   } = useAppContext();
   
   const [content, setContent] = useState('');
@@ -92,7 +90,6 @@ const PostEditor: React.FC = () => {
           status: 'scheduled'
         });
       }
-      showToast('Публикация сохранена');
       setCurrentView('calendar');
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'An error occurred';
@@ -151,12 +148,16 @@ const PostEditor: React.FC = () => {
     setMediaUrls(mediaUrls.filter((_, i) => i !== index));
   };
   
-  const togglePlatform = (platform: 'telegram' | 'vk' | 'instagram') => {
-    if (platforms.includes(platform)) {
-      setPlatforms(platforms.filter(p => p !== platform));
-    } else {
-      setPlatforms([...platforms, platform]);
-    }
+  const togglePlatform = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const platform = e.target.value as 'telegram' | 'vk' | 'instagram';
+    const { checked } = e.target;
+
+    setPlatforms(current => {
+      if (checked) {
+        return current.includes(platform) ? current : [...current, platform];
+      }
+      return current.filter(p => p !== platform);
+    });
   };
   
   const isPlatformAvailable = (platform: 'telegram' | 'vk' | 'instagram') => {
@@ -313,11 +314,10 @@ const PostEditor: React.FC = () => {
                 ].map(platform => {
                   const isAvailable = isPlatformAvailable(platform.id as 'telegram' | 'vk' | 'instagram');
                   const isSelected = platforms.includes(platform.id as 'telegram' | 'vk' | 'instagram');
-                  
+
                   return (
-                    <div
+                    <label
                       key={platform.id}
-                      onClick={() => isAvailable && togglePlatform(platform.id as 'telegram' | 'vk' | 'instagram')}
                       className={`flex items-center p-3 rounded-lg border ${
                         isAvailable
                           ? isSelected
@@ -326,16 +326,28 @@ const PostEditor: React.FC = () => {
                           : 'border-slate-700 bg-slate-800/50 opacity-50 cursor-not-allowed'
                       } ${isAvailable ? 'cursor-pointer hover:bg-slate-700' : ''} transition-colors`}
                     >
-                      <div className={`w-5 h-5 rounded mr-3 flex items-center justify-center ${
-                        isSelected ? 'bg-cyan-500' : 'bg-slate-700'
-                      }`}>
+                      <input
+                        type="checkbox"
+                        value={platform.id}
+                        checked={isSelected}
+                        disabled={!isAvailable}
+                        onChange={togglePlatform}
+                        aria-label={`Выбрать ${platform.name}`}
+                        className="sr-only"
+                      />
+                      <div
+                        className={`w-5 h-5 rounded mr-3 flex items-center justify-center ${
+                          isSelected ? 'bg-cyan-500' : 'bg-slate-700'
+                        }`}
+                        aria-hidden="true"
+                      >
                         {isSelected && <Check size={14} />}
                       </div>
                       <span>{platform.name}</span>
                       {!isAvailable && (
                         <span className="ml-auto text-xs text-slate-500">Не подключено</span>
                       )}
-                    </div>
+                    </label>
                   );
                 })}
               </div>

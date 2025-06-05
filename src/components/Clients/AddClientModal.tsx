@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
 
@@ -14,6 +14,42 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ onClose }) => {
   const [color, setColor] = useState('#F97316');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const node = modalRef.current;
+    if (!node) return;
+    const focusableSelectors =
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+    const focusableElements = Array.from(
+      node.querySelectorAll<HTMLElement>(focusableSelectors)
+    );
+    focusableElements[0]?.focus();
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Tab' && focusableElements.length > 0) {
+        const first = focusableElements[0];
+        const last = focusableElements[focusableElements.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      previouslyFocused?.focus();
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +74,13 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ onClose }) => {
   };
   
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div
+      ref={modalRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="add-client-title"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+    >
       <div className="bg-slate-800 rounded-lg w-full max-w-md p-4 md:p-6 relative">
         <button
           onClick={onClose}
@@ -47,7 +89,9 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ onClose }) => {
           <X size={20} />
         </button>
         
-        <h2 className="text-xl font-bold mb-6">Добавить клиента</h2>
+        <h2 id="add-client-title" className="text-xl font-bold mb-6">
+          Добавить клиента
+        </h2>
         
         <form onSubmit={handleSubmit}>
           {error && (
