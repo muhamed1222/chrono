@@ -370,6 +370,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         signInWithOAuth,
         signOut,
         signOutAll,
+        showToast,
+        clearToast,
         lastActivity,
         clearError,
       }}
