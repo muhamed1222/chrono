@@ -22,7 +22,7 @@
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "sanitize-html": "^2.11.0"
+    "dompurify": "^3.2.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
@@ -32,7 +32,6 @@
     "@types/jest": "^29.5.14",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
-    "@types/sanitize-html": "^2.11.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.18",
     "cypress": "^13.7.3",
