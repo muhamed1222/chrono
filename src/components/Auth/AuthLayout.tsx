@@ -2,12 +2,26 @@ import React, { useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
 
 const AuthLayout: React.FC = () => {
-  const { signIn, signUp } = useAppContext();
+  const { signIn, signUp, signInWithOAuth } = useAppContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
+
+  const handleOAuth = async (
+    provider: 'telegram' | 'vk' | 'google'
+  ) => {
+    setError('');
+    setLoading(true);
+    try {
+      await signInWithOAuth(provider);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'An error occurred';
+      setError(message);
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,8 +107,35 @@ const AuthLayout: React.FC = () => {
               ) : (
                 isRegister ? 'Зарегистрироваться' : 'Войти'
               )}
-          </button>
-        </div>
+            </button>
+          </div>
+
+          <div className="space-y-2">
+            <button
+              type="button"
+              onClick={() => handleOAuth('google')}
+              disabled={loading}
+              className="w-full flex justify-center py-2 px-4 rounded-md bg-slate-600 hover:bg-slate-500 text-white text-sm"
+            >
+              Войти через Google
+            </button>
+            <button
+              type="button"
+              onClick={() => handleOAuth('telegram')}
+              disabled={loading}
+              className="w-full flex justify-center py-2 px-4 rounded-md bg-slate-600 hover:bg-slate-500 text-white text-sm"
+            >
+              Войти через Telegram
+            </button>
+            <button
+              type="button"
+              onClick={() => handleOAuth('vk')}
+              disabled={loading}
+              className="w-full flex justify-center py-2 px-4 rounded-md bg-slate-600 hover:bg-slate-500 text-white text-sm"
+            >
+              Войти через VK
+            </button>
+          </div>
         <div className="text-center">
           {isRegister ? (
             <p className="text-sm text-slate-400">

@@ -1,18 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Calendar, Clock, Image, Send, X } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
 import { formatLocalISO } from '../../utils/time';
+import imageCompression from 'browser-image-compression';
+import { uploadFile } from '../../lib/storage';
 
 const PostEditor: React.FC = () => {
-  const { 
-    clients, 
-    posts, 
-    selectedPost, 
-    selectedClient, 
-    selectedDate, 
+  const {
+    clients,
+    posts,
+    selectedPost,
+    selectedClient,
+    selectedDate,
     setCurrentView,
     addPost,
-    updatePost
+    updatePost,
+    role
   } = useAppContext();
   
   const [content, setContent] = useState('');
@@ -25,6 +28,7 @@ const PostEditor: React.FC = () => {
   const [scheduledTime, setScheduledTime] = useState('12:00');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   useEffect(() => {
     if (selectedPost) {
@@ -105,6 +109,40 @@ const PostEditor: React.FC = () => {
       setMediaInputError('Некорректный URL');
     }
   };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+
+    if (!allowedTypes.includes(file.type)) {
+      setMediaInputError('Недопустимый тип файла');
+      return;
+    }
+
+    if (file.size > maxSize) {
+      setMediaInputError('Файл превышает 5MB');
+      return;
+    }
+
+    setMediaInputError('');
+    const previewUrl = URL.createObjectURL(file);
+    setMediaUrls(prev => [...prev, previewUrl]);
+
+    try {
+      const compressed = await imageCompression(file, { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: true });
+      const uploadedUrl = await uploadFile(compressed);
+      setMediaUrls(current => current.map(url => url === previewUrl ? uploadedUrl : url));
+    } catch {
+      setMediaUrls(current => current.filter(url => url !== previewUrl));
+      setMediaInputError('Не удалось загрузить файл');
+    } finally {
+      URL.revokeObjectURL(previewUrl);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
   
   const handleRemoveMedia = (index: number) => {
     setMediaUrls(mediaUrls.filter((_, i) => i !== index));
@@ -140,14 +178,16 @@ const PostEditor: React.FC = () => {
           >
             Отмена
           </button>
-          <button
-            onClick={handleSavePost}
-            disabled={!content || !clientId || platforms.length === 0 || loading}
-            className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
-          >
-            <Send size={16} className="mr-2" />
-            {loading ? 'Сохранение...' : 'Запланировать'}
-          </button>
+          {role !== 'viewer' && (
+            <button
+              onClick={handleSavePost}
+              disabled={!content || !clientId || platforms.length === 0 || loading}
+              className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+            >
+              <Send size={16} className="mr-2" />
+              {loading ? 'Сохранение...' : 'Запланировать'}
+            </button>
+          )}
         </div>
       </div>
       
@@ -200,6 +240,20 @@ const PostEditor: React.FC = () => {
                 >
                   <Image size={14} className="mr-1" />
                   Добавить
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="px-3 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition-colors flex items-center"
+                >
+                  <Image size={14} className="mr-1" />
+                  Загрузить
                 </button>
               </div>
               {mediaInputError && (

@@ -39,3 +39,5 @@ export interface PostTemplate {
   content: string;
   industry?: string;
 }
+
+export type UserRole = 'viewer' | 'editor' | 'admin';

@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Client, Post, PostTemplate } from '../types';
+import { Client, Post, PostTemplate, UserRole } from '../types';
 import { supabase, handleSupabaseError } from '../lib/supabase';
 import { apiRequest } from '../lib/api';
 import { formatLocalISO } from '../utils/time';
 import sanitizeHtml from 'sanitize-html';
 import { User } from '@supabase/supabase-js';
+import type { Provider } from '@supabase/auth-js';
 
 interface AppContextType {
   clients: Client[];
@@ -15,6 +16,7 @@ interface AppContextType {
   selectedDate: string | null;
   selectedPost: string | null;
   user: User | null;
+  role: UserRole | null;
   loading: boolean;
   error: string | null;
   setCurrentView: (view: 'calendar' | 'clients' | 'templates' | 'post-editor') => void;
@@ -29,7 +31,10 @@ interface AppContextType {
   deletePost: (postId: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
+  signInWithOAuth: (provider: 'telegram' | 'vk' | 'google') => Promise<void>;
   signOut: () => Promise<void>;
+  signOutAll: () => Promise<void>;
+  lastActivity: number;
   clearError: () => void;
 }
 
@@ -44,8 +49,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [role, setRole] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lastActivity, setLastActivity] = useState<number>(Date.now());
+
+  const inactivityMinutes = Number(import.meta.env.VITE_INACTIVITY_TIMEOUT_MINUTES || 0);
+  const inactivityMs = inactivityMinutes > 0 ? inactivityMinutes * 60_000 : null;
 
   useEffect(() => {
     // Check active session and set up auth listener
@@ -78,9 +88,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, []);
 
   useEffect(() => {
-    if (user) {
-      loadData();
-    }
+    const load = async () => {
+      if (user) {
+        const { data } = await supabase.from('roles').select('role').eq('user_id', user.id).single();
+        setRole((data as { role: UserRole } | null)?.role ?? 'editor');
+        await loadData();
+      } else {
+        setRole(null);
+      }
+    };
+    void load();
   }, [user]);
 
   const loadData = async () => {
@@ -234,6 +251,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
+  const signInWithOAuth = async (
+    provider: 'telegram' | 'vk' | 'google'
+  ) => {
+    try {
+      setError(null);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: provider as unknown as Provider,
+      });
+      if (error) throw error;
+    } catch (err) {
+      const errorMessage = handleSupabaseError(err);
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  };
+
   const signOut = async () => {
     try {
       setError(null);
@@ -245,6 +278,36 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       throw new Error(errorMessage);
     }
   };
+
+  const signOutAll = async () => {
+    try {
+      setError(null);
+      const { error } = await supabase.auth.signOut({ scope: 'global' });
+      if (error) throw error;
+    } catch (err) {
+      const errorMessage = handleSupabaseError(err);
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  };
+
+  useEffect(() => {
+    if (!inactivityMs) return;
+    const update = () => setLastActivity(Date.now());
+    const events = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
+    events.forEach((e) => window.addEventListener(e, update));
+    return () => {
+      events.forEach((e) => window.removeEventListener(e, update));
+    };
+  }, [inactivityMs]);
+
+  useEffect(() => {
+    if (!inactivityMs) return;
+    const timer = setTimeout(() => {
+      signOut();
+    }, inactivityMs);
+    return () => clearTimeout(timer);
+  }, [lastActivity, inactivityMs]);
 
   const clearError = () => setError(null);
 
@@ -259,6 +322,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         selectedDate,
         selectedPost,
         user,
+        role,
         loading,
         error,
         setCurrentView,
@@ -273,7 +337,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         deletePost,
         signIn,
         signUp,
+        signInWithOAuth,
         signOut,
+        signOutAll,
+        lastActivity,
         clearError,
       }}
     >

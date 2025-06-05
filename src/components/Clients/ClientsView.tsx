@@ -5,20 +5,22 @@ import ClientCard from './ClientCard';
 import AddClientModal from './AddClientModal';
 
 const ClientsView: React.FC = () => {
-  const { clients } = useAppContext();
+  const { clients, role } = useAppContext();
   const [showAddClientModal, setShowAddClientModal] = useState(false);
 
   return (
     <div className="h-full flex flex-col">
       <div className="p-6 border-b border-slate-700 flex justify-between items-center">
         <h2 className="text-2xl font-bold">Клиенты</h2>
-        <button
-          onClick={() => setShowAddClientModal(true)}
-          className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 transition-colors flex items-center"
-        >
-          <Plus size={16} className="mr-2" />
-          Добавить клиента
-        </button>
+        {role !== 'viewer' && (
+          <button
+            onClick={() => setShowAddClientModal(true)}
+            className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 transition-colors flex items-center"
+          >
+            <Plus size={16} className="mr-2" />
+            Добавить клиента
+          </button>
+        )}
       </div>
 
       <div className="flex-1 p-6 overflow-y-auto">
@@ -31,13 +33,15 @@ const ClientsView: React.FC = () => {
             <p className="text-slate-400 mb-6 text-center max-w-md">
               Добавьте своего первого клиента, чтобы начать создавать и планировать контент.
             </p>
-            <button
-              onClick={() => setShowAddClientModal(true)}
-              className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 transition-colors flex items-center"
-            >
-              <Plus size={16} className="mr-2" />
-              Добавить клиента
-            </button>
+            {role !== 'viewer' && (
+              <button
+                onClick={() => setShowAddClientModal(true)}
+                className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 transition-colors flex items-center"
+              >
+                <Plus size={16} className="mr-2" />
+                Добавить клиента
+              </button>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
