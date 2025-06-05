@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash, Link } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
 import ClientCard from './ClientCard';
 import AddClientModal from './AddClientModal';
