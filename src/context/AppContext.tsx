@@ -63,7 +63,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [notification, setNotification] = useState<string | null>(null);
 
   const inactivityMinutes = Number(
-    import.meta.env.VITE_INACTIVITY_TIMEOUT_MINUTES || 0
   );
   const inactivityMs = inactivityMinutes > 0 ? inactivityMinutes * 60_000 : null;
 
