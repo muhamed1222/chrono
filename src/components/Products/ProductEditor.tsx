@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Package, Image as ImageIcon, Plus, X } from 'lucide-react';
+import { useAppContext } from '../../context/AppContext';
+import { apiRequest } from '../../lib/api';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 
@@ -20,6 +22,8 @@ const ProductEditor: React.FC = () => {
   const [demoLinks, setDemoLinks] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [errors, setErrors] = useState<{[k:string]: string}>({});
+  const { showToast } = useAppContext();
+  const [submitError, setSubmitError] = useState('');
 
   const validate = () => {
     const newErrors: {[k:string]: string} = {};
@@ -89,9 +93,9 @@ const ProductEditor: React.FC = () => {
     setDemoLinks(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validate()) return;
-    // For demo just log product info
+
     const product = {
       name,
       description,
@@ -102,7 +106,18 @@ const ProductEditor: React.FC = () => {
       demoLinks,
       imagesCount: images.length
     };
-    console.log('Product saved', product);
+
+    setSubmitError('');
+    try {
+      await apiRequest('/products', {
+        method: 'POST',
+        body: JSON.stringify(product)
+      });
+      showToast('Product saved successfully');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to save';
+      setSubmitError(message);
+    }
   };
 
   return (
@@ -116,6 +131,11 @@ const ProductEditor: React.FC = () => {
         </Button>
       </div>
       <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+        {submitError && (
+          <div className="mb-4 px-4 py-2 bg-red-500/10 border border-red-500 text-red-400 rounded">
+            {submitError}
+          </div>
+        )}
         <div className="space-y-2">
           <label className="block text-sm font-medium">Name</label>
           <Input value={name} onChange={e => setName(e.target.value)} placeholder="Product name" />
